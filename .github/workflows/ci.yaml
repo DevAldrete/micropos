@@ -1,0 +1,36 @@
+name: Quality of Code (CI)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Review code of the repo
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Installing dependencies
+        run: npm ci
+
+      - name: Verify format and lint
+        run: npm run lint
+
+      - name: Verify types
+        run: npm run typecheck
+
+      - name: Attempt to build
+        run: npm run build
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEYL: ${{ secrets.SUPABASE_KEY }}
