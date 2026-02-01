@@ -9,6 +9,10 @@
 		"astro": "astro",
 		"lint": "biome check .",
 		"format": "biome format --write",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:run": "vitest run",
 		"prepare": "husky",
 		"lint-staged": "lint-staged"
 	},
@@ -27,8 +31,15 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.13",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.2",
+		"@testing-library/user-event": "^14.6.1",
+		"@vitejs/plugin-react": "^5.1.2",
+		"@vitest/ui": "^4.0.18",
 		"husky": "^9.1.7",
-		"lint-staged": "^16.2.7"
+		"jsdom": "^27.4.0",
+		"lint-staged": "^16.2.7",
+		"vitest": "^4.0.18"
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx,astro}": [
