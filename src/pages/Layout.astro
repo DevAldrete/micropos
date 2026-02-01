@@ -1,0 +1,39 @@
+---
+import "@/styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "MicroPOS - Sistema Operativo para Clubes Estudiantiles",
+	description = "Gestión de ventas, inventario y métricas para clubes estudiantiles. Digitaliza tu economía estudiantil con MicroPOS.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		
+		<!-- Theme Script - Run immediately to prevent flash -->
+		<script is:inline>
+			const theme = (() => {
+				const stored = localStorage.getItem('theme');
+				if (stored) return stored;
+				return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			})();
+			document.documentElement.classList.toggle('dark', theme === 'dark');
+		</script>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

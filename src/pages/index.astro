@@ -1,17 +1,281 @@
 ---
-
+import { Header } from "@/components/Header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import Layout from "./Layout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+	<Header client:load />
+
+	<main class="min-h-screen">
+			<!-- Hero Section -->
+			<section class="container max-w-screen-2xl px-4 md:px-8 py-20 md:py-32">
+				<div class="flex flex-col items-center text-center space-y-8">
+					<Badge variant="secondary" className="text-sm px-4 py-1">
+						🚀 En Desarrollo - MVP v1.0
+					</Badge>
+
+					<h1
+						class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight max-w-4xl"
+					>
+						El Sistema Operativo para
+						<span
+							class="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent"
+						>
+							Clubes Estudiantiles
+						</span>
+					</h1>
+
+					<p class="text-xl md:text-2xl text-muted-foreground max-w-2xl">
+						Gestión de ventas, inventario y métricas simplificado. Sin hojas de
+						cálculo, sin libretas perdidas.
+					</p>
+
+					<div class="flex flex-col sm:flex-row gap-4 pt-4">
+						<Button size="lg" className="text-lg px-8">
+							Comenzar Gratis
+						</Button>
+						<Button size="lg" variant="outline" className="text-lg px-8">
+							Ver Demo
+						</Button>
+					</div>
+
+					<div class="flex items-center gap-6 pt-8 text-sm text-muted-foreground">
+						<div class="flex items-center gap-2">
+							<span class="text-2xl">⚡</span>
+							<span>Rápido</span>
+						</div>
+						<Separator orientation="vertical" className="h-6" />
+						<div class="flex items-center gap-2">
+							<span class="text-2xl">🔐</span>
+							<span>Seguro</span>
+						</div>
+						<Separator orientation="vertical" className="h-6" />
+						<div class="flex items-center gap-2">
+							<span class="text-2xl">📊</span>
+							<span>Simple</span>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Features Section -->
+			<section id="features" class="bg-muted/50 py-20 md:py-32">
+				<div class="container max-w-screen-2xl px-4 md:px-8">
+					<div class="text-center space-y-4 mb-16">
+						<h2 class="text-3xl md:text-5xl font-bold">
+							Todo lo que necesitas
+						</h2>
+						<p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+							Características esenciales diseñadas para clubes estudiantiles
+						</p>
+					</div>
+
+					<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+						<Card>
+							<CardHeader>
+								<div class="text-4xl mb-2">🔐</div>
+								<CardTitle>Autenticación Multi-Club</CardTitle>
+								<CardDescription>
+									Cada club tiene su propia cuenta y datos completamente aislados
+									y seguros
+								</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<div class="text-4xl mb-2">📦</div>
+								<CardTitle>Gestión de Inventario</CardTitle>
+								<CardDescription>
+									Control de stock en tiempo real con altas y bajas automáticas
+								</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<div class="text-4xl mb-2">🛒</div>
+								<CardTitle>Terminal de Venta</CardTitle>
+								<CardDescription>
+									Interfaz rápida y optimizada para cobrar desde celular o laptop
+								</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<div class="text-4xl mb-2">📊</div>
+								<CardTitle>Dashboard Financiero</CardTitle>
+								<CardDescription>
+									Gráficas simples de ingresos diarios, semanales y mensuales
+								</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<div class="text-4xl mb-2">🧾</div>
+								<CardTitle>Tickets Digitales</CardTitle>
+								<CardDescription>
+									Generación automática de comprobantes de venta digitales
+								</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<div class="text-4xl mb-2">📱</div>
+								<CardTitle>Responsive Design</CardTitle>
+								<CardDescription>
+									Funciona perfectamente en cualquier dispositivo, desktop o móvil
+								</CardDescription>
+							</CardHeader>
+						</Card>
+					</div>
+				</div>
+			</section>
+
+			<!-- Tech Stack Section -->
+			<section id="tech" class="py-20 md:py-32">
+				<div class="container max-w-screen-2xl px-4 md:px-8">
+					<div class="text-center space-y-4 mb-16">
+						<h2 class="text-3xl md:text-5xl font-bold">Tecnología Moderna</h2>
+						<p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+							Construido con las mejores herramientas para garantizar velocidad y
+							calidad
+						</p>
+					</div>
+
+					<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">Astro</CardTitle>
+								<CardDescription>SSR & Routing</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">React</CardTitle>
+								<CardDescription>UI Components</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">Tailwind CSS</CardTitle>
+								<CardDescription>Styling</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">shadcn/ui</CardTitle>
+								<CardDescription>Component Library</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">Supabase</CardTitle>
+								<CardDescription>Backend & Database</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">Zustand</CardTitle>
+								<CardDescription>State Management</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">TypeScript</CardTitle>
+								<CardDescription>Type Safety</CardDescription>
+							</CardHeader>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<CardTitle className="text-lg">Biome</CardTitle>
+								<CardDescription>Linting & Formatting</CardDescription>
+							</CardHeader>
+						</Card>
+					</div>
+				</div>
+			</section>
+
+			<!-- About/Mission Section -->
+			<section id="about" class="bg-muted/50 py-20 md:py-32">
+				<div class="container max-w-screen-2xl px-4 md:px-8">
+					<div class="max-w-3xl mx-auto text-center space-y-6">
+						<h2 class="text-3xl md:text-5xl font-bold">Nuestra Misión</h2>
+						<p class="text-xl text-muted-foreground leading-relaxed">
+							Impulsado por el Club <strong>Enigma</strong>, buscamos digitalizar
+							la economía estudiantil. MicroPOS es una plataforma SaaS que permite
+							a cualquier club escolar gestionar sus ventas de comida, merch o
+							eventos de forma profesional.
+						</p>
+						<div class="pt-8">
+							<Badge variant="outline" className="text-lg px-6 py-2">
+								MIT License - Open Source
+							</Badge>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- CTA Section -->
+			<section class="py-20 md:py-32">
+				<div class="container max-w-screen-2xl px-4 md:px-8">
+					<Card className="border-2">
+						<CardContent className="pt-12 pb-12">
+							<div class="text-center space-y-6">
+								<h2 class="text-3xl md:text-4xl font-bold">
+									¿Listo para digitalizar tu club?
+								</h2>
+								<p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+									Únete a la revolución de la economía estudiantil y gestiona tu
+									club como un profesional
+								</p>
+								<div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+									<Button size="lg" className="text-lg px-8">
+										Comenzar Ahora
+									</Button>
+									<Button size="lg" variant="outline" className="text-lg px-8">
+										Contactar
+									</Button>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+		</main>
+
+	<!-- Footer -->
+	<footer class="border-t border-border py-12">
+		<div class="container max-w-screen-2xl px-4 md:px-8">
+			<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+				<div class="flex items-center gap-2">
+					<span class="text-2xl">⚡</span>
+					<span class="font-bold">MicroPOS</span>
+				</div>
+				<p class="text-sm text-muted-foreground">
+					Construido con ❤️ y mucho café por Enigma Student Club
+				</p>
+			</div>
+		</div>
+	</footer>
+</Layout>
