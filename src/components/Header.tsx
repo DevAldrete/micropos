@@ -7,10 +7,9 @@ export function Header() {
 		<ThemeProvider>
 			<header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 				<div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4 md:px-8">
-					<div className="flex items-center gap-2">
-						<span className="text-2xl font-bold">⚡</span>
-						<span className="text-xl font-bold">MicroPOS</span>
-					</div>
+					<a href="/" className="flex items-center gap-2">
+						<span className="text-2xl font-bold">MicroPOS</span>
+					</a>
 
 					<nav className="hidden md:flex items-center gap-6">
 						<a
@@ -20,10 +19,10 @@ export function Header() {
 							Características
 						</a>
 						<a
-							href="#tech"
+							href="#pricing"
 							className="text-sm font-medium text-foreground/60 transition-colors hover:text-foreground"
 						>
-							Tecnología
+							Precios
 						</a>
 						<a
 							href="#about"
@@ -35,9 +34,16 @@ export function Header() {
 
 					<div className="flex items-center gap-2">
 						<ThemeToggle />
-						<Button variant="default" size="sm">
-							Comenzar
-						</Button>
+						<a href="/auth/signin">
+							<Button variant="ghost" size="sm">
+								Iniciar Sesión
+							</Button>
+						</a>
+						<a href="/auth/signup">
+							<Button variant="default" size="sm">
+								Comenzar Gratis
+							</Button>
+						</a>
 					</div>
 				</div>
 			</header>
