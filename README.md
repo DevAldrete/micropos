@@ -1,76 +1,135 @@
-# ⚡ MicroPOS
+# Turborepo starter
 
-> El sistema operativo para Clubes Estudiantiles. Gestión de ventas, inventario y métricas, simplificado.
+This Turborepo starter is maintained by the Turborepo core team.
 
-![Status](https://img.shields.io/badge/Status-Development-yellow) ![License](https://img.shields.io/badge/License-MIT-blue) ![Stack](https://img.shields.io/badge/Stack-Astro_React_Supabase-orange)
+## Using this example
 
-## 🎯 Misión
+Run the following command:
 
-Este proyecto, impulsado por el Club **Enigma**, busca digitalizar la economía estudiantil. MicroPOS es una plataforma SaaS (Software as a Service) que permite a cualquier club escolar gestionar sus ventas de comida, merch o eventos sin hojas de cálculo ni libretas perdidas.
+```sh
+npx create-turbo@latest
+```
 
-## 🚀 Funcionalidades Principales (MVP)
+## What's inside?
 
-Estamos construyendo la **Versión 1.0** con estas características esenciales:
+This Turborepo includes the following packages/apps:
 
-- **🔐 Autenticación Multi-Club:** Cada club tiene su propia cuenta y datos aislados.
-- **📦 Gestión de Inventario:** Altas, bajas y control de stock en tiempo real.
-- **🛒 Terminal de Venta (POS):** Interfaz rápida para cobrar productos desde el celular o laptop.
-- **📊 Dashboard Financiero:** Gráficas simples de ingresos diarios y semanales.
-- **🧾 Tickets Digitales:** Generación de comprobantes simples.
+### Apps and Packages
 
-## 🛠️ Tech Stack
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-Utilizamos tecnologías modernas y tipadas para asegurar calidad y velocidad:
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-- **Core:** [Astro](https://astro.build/) (SSR & Routing)
-- **UI:** [React](https://react.dev/) + [Tailwind CSS](https://tailwindcss.com/)
-- **Componentes:** [shadcn/ui](https://ui.shadcn.com/) (No reinventamos la rueda)
-- **Backend & DB:** [Supabase](https://supabase.com/) (PostgreSQL + Auth)
-- **Estado:** [Zustand](https://github.com/pmndrs/zustand) (Manejo del carrito de compras)
-- **Pagos:** Stripe / Lemon Squeezy (Futura integración)
-- **Calidad:** Biome + Husky (Linting estricto)
+### Utilities
 
-## 💻 Instalación y Setup
+This Turborepo has some additional tools already setup for you:
 
-Sigue estos pasos para levantar el proyecto localmente:
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
 
-1. **Clonar el repositorio:**
+### Build
 
-   ```bash
-   git clone [https://github.com/tu-usuario/micropos.git](https://github.com/tu-usuario/micropos.git)
-   cd micropos
-   ```
+To build all apps and packages, run the following command:
 
-2. **Instalar dependencias:**
+```
+cd my-turborepo
 
-   ```bash
-   npm install
-   ```
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo build
 
-3. **Configurar Variables de Entorno:**
-   Duplica el archivo `.env.example` y renómbralo a `.env`. Pide las llaves de Supabase al Tech Lead.
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo build
+yarn dlx turbo build
+pnpm exec turbo build
+```
 
-   ```bash
-   cp .env.example .env
-   ```
+You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
 
-4. **Correr el servidor:**
+```
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo build --filter=docs
 
-   ```bash
-   npm run dev
-   ```
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo build --filter=docs
+yarn exec turbo build --filter=docs
+pnpm exec turbo build --filter=docs
+```
 
-## 🤝 Reglas de Contribución (LEER OBLIGATORIAMENTE)
+### Develop
 
-Para mantener el código limpio, seguimos un protocolo estricto ("Iron Fist Protocol"):
+To develop all apps and packages, run the following command:
 
-1. **Ramas Protegidas:** No puedes hacer push directo a `main`.
-2. **Commits Semánticos:** Usamos [Conventional Commits](https://www.conventionalcommits.org/).
-   - ✅ `feat: agregar carrito de compras`
-   - ❌ `cambios en el carrito`
-3. **Linting Automático:** Husky no te dejará hacer commit si el código tiene errores o mal formato.
-4. **Pull Requests:** Todo cambio requiere un PR aprobado por el Owner del proyecto.
+```
+cd my-turborepo
 
----
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo dev
 
-Construido con ❤️ y mucho café por [Enigma Student Club].
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo dev
+yarn exec turbo dev
+pnpm exec turbo dev
+```
+
+You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+
+```
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo dev --filter=web
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo dev --filter=web
+yarn exec turbo dev --filter=web
+pnpm exec turbo dev --filter=web
+```
+
+### Remote Caching
+
+> [!TIP]
+> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+
+Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+
+```
+cd my-turborepo
+
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo login
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo login
+yarn exec turbo login
+pnpm exec turbo login
+```
+
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+
+```
+# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
+turbo link
+
+# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+npx turbo link
+yarn exec turbo link
+pnpm exec turbo link
+```
+
+## Useful Links
+
+Learn more about the power of Turborepo:
+
+- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
+- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
+- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
+- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
+- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
+- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
