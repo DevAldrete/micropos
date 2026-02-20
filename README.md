@@ -1,135 +1,106 @@
-# Turborepo starter
+# MicroPOS
 
-This Turborepo starter is maintained by the Turborepo core team.
+**MicroPOS** is a free, real-time Point of Sale and ERP platform for everyone. Anyone can sign up as an owner, create their own business, and immediately get a full POS + ERP system — inventory management, payments, billing, and metrics — shareable with their employees and updated live for the whole team.
 
-## Using this example
+> **Completely free. No cost. No catch.**
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## Features
 
-## What's inside?
+- **Multi-tenant stores** — sign up as an owner and create your own business POS in seconds
+- **Real-time collaboration** — all changes sync instantly across every connected employee
+- **Inventory management** — track stock levels interactively and efficiently
+- **Payments & billing** — manage transactions and generate invoices
+- **Metrics & reporting** — dashboards to monitor your business health
+- **Role-based access** — owners control what employees can see and do
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## Tech Stack
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+| Layer    | Technology                                          |
+| -------- | --------------------------------------------------- |
+| Frontend | SvelteKit 2 + Svelte 5, Tailwind CSS v4, TypeScript |
+| Backend  | AdonisJS 6, TypeScript, PostgreSQL                  |
+| Monorepo | Turborepo, npm workspaces                           |
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+---
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## Project Structure
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+apps/
+  api/   — REST API (AdonisJS 6, Lucid ORM, PostgreSQL)
+  web/   — Frontend (SvelteKit 2, Svelte 5, Tailwind CSS v4)
+packages/
+  ui/             — Shared component library (@repo/ui)
+  eslint-config/  — Shared ESLint configs (@repo/eslint-config)
+  typescript-config/ — Shared tsconfig bases (@repo/typescript-config)
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18
+- npm ≥ 11
+- PostgreSQL
+
+### Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/your-org/micropos.git
+cd micropos
+
+# Install dependencies
+npm install
+
+# Configure the API environment
+cp apps/api/.env.example apps/api/.env
+# Edit apps/api/.env with your PostgreSQL credentials
+
+# Run database migrations
+cd apps/api
+node ace migration:run
+cd ../..
+
+# Start everything in development mode
+npm run dev
 ```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+The API will be available at `http://localhost:3333` and the frontend at `http://localhost:5173`.
+
+---
+
+## Development Commands
+
+```bash
+npm run dev          # Start all apps in development mode
+npm run build        # Build all apps and packages
+npm run lint         # Lint all workspaces
+npm run format       # Format all files with Prettier
+npm run check-types  # TypeScript type-check all workspaces
 ```
 
-### Develop
+Run a single app:
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
+```bash
 npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+npx turbo dev --filter=api
 ```
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## Contributing
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+See [AGENTS.md](./AGENTS.md) for full coding guidelines, naming conventions, and testing instructions.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+---
 
-```
-cd my-turborepo
+## License
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+MicroPOS is free and open source.
