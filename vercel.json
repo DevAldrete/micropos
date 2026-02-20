@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npx turbo build --filter=web",
+  "outputDirectory": "apps/web/.vercel/output",
+  "installCommand": "npm install",
+  "framework": "sveltekit"
+}
