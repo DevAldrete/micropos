@@ -1,0 +1,22 @@
+# Build outputs
+**/build/
+**/.next/
+**/.svelte-kit/
+**/dist/
+
+# Dependencies
+**/node_modules/
+
+# Environment files
+**/.env
+**/.env.*
+!**/.env.example
+
+# Test / coverage
+**/coverage/
+
+# Turbo cache
+.turbo/
+
+# Logs
+**/*.log

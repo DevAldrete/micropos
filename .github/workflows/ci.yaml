@@ -1,4 +1,4 @@
-name: Quality of Code (CI)
+name: CI
 
 on:
   pull_request:
@@ -6,31 +6,151 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-test:
+  # ─── Lint ────────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-
     steps:
-      - name: Review code of the repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
-      - name: Installing dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Verify format and lint
+      - name: Lint all workspaces
         run: npm run lint
 
-      - name: Verify types
-        run: npm run typecheck
+  # ─── Type-check ───────────────────────────────────────────────────────────────
+  typecheck:
+    name: Type-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Attempt to build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # SvelteKit requires a sync before svelte-check can run
+      - name: Sync SvelteKit
+        run: npx turbo run prepare --filter=web
+
+      - name: Type-check web (svelte-check)
+        run: npx turbo run check --filter=web
+
+      - name: Type-check api
+        run: npx turbo run typecheck --filter=api
+
+  # ─── Build ───────────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all workspaces
         run: npm run build
+
+  # ─── Test (web) ───────────────────────────────────────────────────────────────
+  test-web:
+    name: Test / web
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+
+      - name: Run web tests
+        run: npm run test
+        working-directory: apps/web
+
+  # ─── Test (api) ───────────────────────────────────────────────────────────────
+  test-api:
+    name: Test / api
+    runs-on: ubuntu-latest
+    needs: [lint]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEYL: ${{ secrets.SUPABASE_KEY }}
+          POSTGRES_USER: micropos
+          POSTGRES_PASSWORD: micropos
+          POSTGRES_DB: micropos_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database migrations
+        run: node ace migration:run --force
+        working-directory: apps/api
+        env:
+          NODE_ENV: test
+          TZ: UTC
+          APP_KEY: ${{ secrets.APP_KEY || 'a-random-32-character-long-string!!' }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_USER: micropos
+          DB_PASSWORD: micropos
+          DB_DATABASE: micropos_test
+
+      - name: Run api tests
+        run: node ace test
+        working-directory: apps/api
+        env:
+          NODE_ENV: test
+          TZ: UTC
+          APP_KEY: ${{ secrets.APP_KEY || 'a-random-32-character-long-string!!' }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_USER: micropos
+          DB_PASSWORD: micropos
+          DB_DATABASE: micropos_test
