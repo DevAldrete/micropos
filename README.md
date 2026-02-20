@@ -1,76 +1,106 @@
-# ⚡ MicroPOS
+# MicroPOS
 
-> El sistema operativo para Clubes Estudiantiles. Gestión de ventas, inventario y métricas, simplificado.
+**MicroPOS** is a free, real-time Point of Sale and ERP platform for everyone. Anyone can sign up as an owner, create their own business, and immediately get a full POS + ERP system — inventory management, payments, billing, and metrics — shareable with their employees and updated live for the whole team.
 
-![Status](https://img.shields.io/badge/Status-Development-yellow) ![License](https://img.shields.io/badge/License-MIT-blue) ![Stack](https://img.shields.io/badge/Stack-Astro_React_Supabase-orange)
-
-## 🎯 Misión
-
-Este proyecto, impulsado por el Club **Enigma**, busca digitalizar la economía estudiantil. MicroPOS es una plataforma SaaS (Software as a Service) que permite a cualquier club escolar gestionar sus ventas de comida, merch o eventos sin hojas de cálculo ni libretas perdidas.
-
-## 🚀 Funcionalidades Principales (MVP)
-
-Estamos construyendo la **Versión 1.0** con estas características esenciales:
-
-- **🔐 Autenticación Multi-Club:** Cada club tiene su propia cuenta y datos aislados.
-- **📦 Gestión de Inventario:** Altas, bajas y control de stock en tiempo real.
-- **🛒 Terminal de Venta (POS):** Interfaz rápida para cobrar productos desde el celular o laptop.
-- **📊 Dashboard Financiero:** Gráficas simples de ingresos diarios y semanales.
-- **🧾 Tickets Digitales:** Generación de comprobantes simples.
-
-## 🛠️ Tech Stack
-
-Utilizamos tecnologías modernas y tipadas para asegurar calidad y velocidad:
-
-- **Core:** [Astro](https://astro.build/) (SSR & Routing)
-- **UI:** [React](https://react.dev/) + [Tailwind CSS](https://tailwindcss.com/)
-- **Componentes:** [shadcn/ui](https://ui.shadcn.com/) (No reinventamos la rueda)
-- **Backend & DB:** [Supabase](https://supabase.com/) (PostgreSQL + Auth)
-- **Estado:** [Zustand](https://github.com/pmndrs/zustand) (Manejo del carrito de compras)
-- **Pagos:** Stripe / Lemon Squeezy (Futura integración)
-- **Calidad:** Biome + Husky (Linting estricto)
-
-## 💻 Instalación y Setup
-
-Sigue estos pasos para levantar el proyecto localmente:
-
-1. **Clonar el repositorio:**
-
-   ```bash
-   git clone [https://github.com/tu-usuario/micropos.git](https://github.com/tu-usuario/micropos.git)
-   cd micropos
-   ```
-
-2. **Instalar dependencias:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Configurar Variables de Entorno:**
-   Duplica el archivo `.env.example` y renómbralo a `.env`. Pide las llaves de Supabase al Tech Lead.
-
-   ```bash
-   cp .env.example .env
-   ```
-
-4. **Correr el servidor:**
-
-   ```bash
-   npm run dev
-   ```
-
-## 🤝 Reglas de Contribución (LEER OBLIGATORIAMENTE)
-
-Para mantener el código limpio, seguimos un protocolo estricto ("Iron Fist Protocol"):
-
-1. **Ramas Protegidas:** No puedes hacer push directo a `main`.
-2. **Commits Semánticos:** Usamos [Conventional Commits](https://www.conventionalcommits.org/).
-   - ✅ `feat: agregar carrito de compras`
-   - ❌ `cambios en el carrito`
-3. **Linting Automático:** Husky no te dejará hacer commit si el código tiene errores o mal formato.
-4. **Pull Requests:** Todo cambio requiere un PR aprobado por el Owner del proyecto.
+> **Completely free. No cost. No catch.**
 
 ---
 
-Construido con ❤️ y mucho café por [Enigma Student Club].
+## Features
+
+- **Multi-tenant stores** — sign up as an owner and create your own business POS in seconds
+- **Real-time collaboration** — all changes sync instantly across every connected employee
+- **Inventory management** — track stock levels interactively and efficiently
+- **Payments & billing** — manage transactions and generate invoices
+- **Metrics & reporting** — dashboards to monitor your business health
+- **Role-based access** — owners control what employees can see and do
+
+---
+
+## Tech Stack
+
+| Layer    | Technology                                          |
+| -------- | --------------------------------------------------- |
+| Frontend | SvelteKit 2 + Svelte 5, Tailwind CSS v4, TypeScript |
+| Backend  | AdonisJS 6, TypeScript, PostgreSQL                  |
+| Monorepo | Turborepo, npm workspaces                           |
+
+---
+
+## Project Structure
+
+```
+apps/
+  api/   — REST API (AdonisJS 6, Lucid ORM, PostgreSQL)
+  web/   — Frontend (SvelteKit 2, Svelte 5, Tailwind CSS v4)
+packages/
+  ui/             — Shared component library (@repo/ui)
+  eslint-config/  — Shared ESLint configs (@repo/eslint-config)
+  typescript-config/ — Shared tsconfig bases (@repo/typescript-config)
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18
+- npm ≥ 11
+- PostgreSQL
+
+### Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/your-org/micropos.git
+cd micropos
+
+# Install dependencies
+npm install
+
+# Configure the API environment
+cp apps/api/.env.example apps/api/.env
+# Edit apps/api/.env with your PostgreSQL credentials
+
+# Run database migrations
+cd apps/api
+node ace migration:run
+cd ../..
+
+# Start everything in development mode
+npm run dev
+```
+
+The API will be available at `http://localhost:3333` and the frontend at `http://localhost:5173`.
+
+---
+
+## Development Commands
+
+```bash
+npm run dev          # Start all apps in development mode
+npm run build        # Build all apps and packages
+npm run lint         # Lint all workspaces
+npm run format       # Format all files with Prettier
+npm run check-types  # TypeScript type-check all workspaces
+```
+
+Run a single app:
+
+```bash
+npx turbo dev --filter=web
+npx turbo dev --filter=api
+```
+
+---
+
+## Contributing
+
+See [AGENTS.md](./AGENTS.md) for full coding guidelines, naming conventions, and testing instructions.
+
+---
+
+## License
+
+MicroPOS is free and open source.
