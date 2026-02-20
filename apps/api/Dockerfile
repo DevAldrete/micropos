@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────
 # Stage 1: build
 # ─────────────────────────────────────────────
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ RUN npm prune --omit=dev --workspace=api
 # ─────────────────────────────────────────────
 # Stage 2: runtime
 # ─────────────────────────────────────────────
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 WORKDIR /app
 

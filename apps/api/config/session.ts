@@ -19,14 +19,38 @@ const sessionConfig = defineConfig({
   age: '2h',
 
   /**
-   * Configuration for session cookie and the
-   * cookie store
+   * Configuration for session cookie and the cookie store.
+   *
+   * DEV NOTE (cross-origin):
+   *   The web app (localhost:5173) and this API (localhost:3333) run on different
+   *   ports, which browsers treat as cross-site. To allow the session cookie to be
+   *   sent on cross-origin requests we must use:
+   *     sameSite: 'none'  — cookie is sent on all cross-site requests
+   *     secure: false     — allows 'none' over plain HTTP in local dev
+   *
+   *   Without this, 'lax' (the browser default) blocks the cookie on cross-origin
+   *   POST requests, so login/logout would appear to work but the session would
+   *   never be attached to follow-up requests.
+   *
+   * PROD NOTE:
+   *   In production the web app and API should be served from the same origin
+   *   (e.g. via a reverse proxy), which lets you use:
+   *     sameSite: 'lax'   — stricter, only sends cookie on same-site navigations
+   *     secure: true      — cookie only sent over HTTPS (already enforced by app.inProduction)
+   *   If cross-origin is unavoidable in production you MUST use HTTPS and set:
+   *     sameSite: 'none'
+   *     secure: true
    */
   cookie: {
     path: '/',
     httpOnly: true,
+    // DEV: false so sameSite:'none' works without HTTPS locally.
+    // PROD: must be true — HTTPS is required for sameSite:'none' in production.
     secure: app.inProduction,
-    sameSite: 'lax',
+    // DEV: 'none' required for cross-origin (different ports on localhost).
+    // PROD: change to 'lax' once web + API share the same origin (recommended),
+    //       or keep 'none' + ensure secure:true if cross-origin is needed in prod.
+    sameSite: app.inProduction ? 'lax' : 'none',
   },
 
   /**
@@ -42,7 +66,7 @@ const sessionConfig = defineConfig({
    */
   stores: {
     cookie: stores.cookie(),
-  }
+  },
 })
 
 export default sessionConfig
