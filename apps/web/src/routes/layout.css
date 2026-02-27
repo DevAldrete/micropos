@@ -1,3 +1,108 @@
-@import 'tailwindcss';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-brand: #ff3b00;
+  --color-surface: #f4f4f0;
+  --color-ink: #0a0a0a;
+  --color-ink-light: #525252;
+  --color-paper: #ffffff;
+  --color-border: #0a0a0a;
+  --font-display: "Bricolage Grotesque", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "DM Sans", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+}
+
+.brutal-border {
+  border: 2px solid var(--color-ink);
+}
+
+.brutal-shadow {
+  box-shadow: 6px 6px 0px 0px var(--color-ink);
+  transition:
+    transform 0.1s cubic-bezier(0, 0, 0.2, 1),
+    box-shadow 0.1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.brutal-shadow:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px 0px var(--color-ink);
+}
+
+.brutal-shadow:active {
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0px 0px var(--color-ink);
+}
+
+.brutal-input {
+  border: 2px solid var(--color-ink);
+  background-color: var(--color-paper);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.brutal-input:focus {
+  outline: none;
+  box-shadow: 4px 4px 0px 0px var(--color-brand);
+  border-color: var(--color-ink);
+}
+
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+  white-space: nowrap;
+  padding: 0.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border-top: 2px solid var(--color-ink);
+  border-bottom: 2px solid var(--color-ink);
+}
+
+.ticker {
+  display: inline-block;
+  animation: ticker 20s linear infinite;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.grid-bg {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(10, 10, 10, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10, 10, 10, 0.05) 1px, transparent 1px);
+}

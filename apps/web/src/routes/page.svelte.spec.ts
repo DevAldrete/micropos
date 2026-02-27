@@ -11,18 +11,18 @@ describe("/+page.svelte (landing page)", () => {
     await expect.element(heading).toBeInTheDocument();
   });
 
-  it("shows Get started and Sign in links when not logged in", async () => {
+  it("shows CLAIM YOUR STORE and SYSTEM LOGIN links when not logged in", async () => {
     render(Page, { props: { data: { user: null } } });
 
     await expect
-      .element(page.getByRole("link", { name: /get started/i }))
+      .element(page.getByRole("link", { name: /claim your store/i }))
       .toBeInTheDocument();
     await expect
-      .element(page.getByRole("link", { name: /sign in/i }))
+      .element(page.getByRole("link", { name: /system login/i }))
       .toBeInTheDocument();
   });
 
-  it("shows Go to dashboard link when user is logged in", async () => {
+  it("shows ENTER DASHBOARD link when user is logged in", async () => {
     render(Page, {
       props: {
         data: {
@@ -32,7 +32,7 @@ describe("/+page.svelte (landing page)", () => {
     });
 
     await expect
-      .element(page.getByRole("link", { name: /go to dashboard/i }))
+      .element(page.getByRole("link", { name: /enter dashboard/i }))
       .toBeInTheDocument();
   });
 });

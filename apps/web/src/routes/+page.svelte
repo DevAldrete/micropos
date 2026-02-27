@@ -5,156 +5,156 @@
 </script>
 
 <svelte:head>
-	<title>MicroPOS — Simple point of sale for modern businesses</title>
+	<title>MicroPOS — Free real-time Point of Sale & ERP</title>
 </svelte:head>
 
-<!-- Hero -->
-<section class="bg-white px-4 py-24 text-center">
-	<div class="mx-auto max-w-2xl">
-		<span
-			class="mb-4 inline-block rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-600"
-		>
-			Now in early access
-		</span>
+<!-- Hero Section -->
+<section class="relative px-6 py-24 md:py-32 xl:py-48 flex flex-col items-center justify-center overflow-hidden grid-bg">
+	<div class="absolute top-0 right-0 w-[40vw] h-[40vw] max-w-lg max-h-lg bg-[var(--color-brand)] rounded-full blur-[120px] opacity-20 -z-10 translate-x-1/4 -translate-y-1/4 mix-blend-multiply"></div>
+	<div class="absolute bottom-0 left-0 w-[30vw] h-[30vw] max-w-md max-h-md bg-black rounded-full blur-[100px] opacity-10 -z-10 -translate-x-1/4 translate-y-1/4 mix-blend-multiply"></div>
 
-		<h1 class="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-			The point of sale<br />built for <span class="text-indigo-600">you</span>
+	<div class="max-w-5xl mx-auto w-full text-center flex flex-col items-center">
+		<div class="inline-flex items-center gap-2 px-4 py-2 border-2 border-black bg-white brutal-shadow font-mono text-sm uppercase tracking-widest font-bold mb-12 transform -rotate-2">
+			<span class="w-2 h-2 rounded-full bg-[var(--color-brand)] animate-pulse"></span>
+			<span>EARLY ACCESS v1.0</span>
+		</div>
+
+		<h1 class="text-6xl sm:text-7xl md:text-[6rem] lg:text-[8rem] font-black font-display uppercase tracking-tighter leading-[0.85] mb-8 text-balance">
+			THE ERP FOR<br />
+			<span class="text-white relative inline-block">
+				<span class="absolute inset-0 bg-[var(--color-brand)] -skew-y-2 brutal-shadow"></span>
+				<span class="relative z-10 px-4">EVERYONE</span>
+			</span>
 		</h1>
 
-		<p class="mt-6 text-lg text-gray-500">
-			MicroPOS helps small businesses manage sales, inventory, and customers — all from one
-			simple dashboard.
+		<p class="mt-8 text-xl md:text-2xl font-sans font-medium text-black max-w-2xl text-balance">
+			MicroPOS is a free, real-time Point of Sale and ERP platform. Track stock, manage payments, and collaborate instantly. No catch.
 		</p>
 
-		<div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+		<div class="mt-16 flex flex-col sm:flex-row items-center gap-6 font-mono font-bold uppercase w-full sm:w-auto">
 			{#if data.user}
 				<a
 					href="/dashboard"
-					class="rounded-md bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+					class="w-full sm:w-auto px-8 py-5 border-2 border-black bg-[var(--color-brand)] text-white text-lg brutal-shadow hover:bg-black transition-colors flex items-center justify-center gap-3"
 				>
-					Go to dashboard
+					ENTER DASHBOARD
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
 				</a>
 			{:else}
 				<a
 					href="/register"
-					class="rounded-md bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+					class="w-full sm:w-auto px-8 py-5 border-2 border-black bg-[var(--color-brand)] text-white text-lg brutal-shadow hover:bg-black transition-colors flex items-center justify-center gap-3"
 				>
-					Get started for free
+					CLAIM YOUR STORE
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
 				</a>
 				<a
 					href="/login"
-					class="rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+					class="w-full sm:w-auto px-8 py-5 border-2 border-black bg-white text-black text-lg brutal-shadow hover:bg-gray-100 transition-colors flex items-center justify-center"
 				>
-					Sign in
+					SYSTEM LOGIN
 				</a>
 			{/if}
 		</div>
 	</div>
 </section>
 
-<!-- Features -->
-<section class="bg-gray-50 px-4 py-20">
-	<div class="mx-auto max-w-5xl">
-		<h2 class="text-center text-2xl font-bold text-gray-900">Everything you need to sell</h2>
-		<p class="mt-3 text-center text-gray-500">
-			No bloat. No complexity. Just the tools that matter.
-		</p>
-
-		<div class="mt-12 grid gap-8 sm:grid-cols-3">
-			<div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-				<div
-					class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="h-5 w-5"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-						/>
-					</svg>
-				</div>
-				<h3 class="font-semibold text-gray-900">Fast checkout</h3>
-				<p class="mt-2 text-sm text-gray-500">
-					Ring up sales in seconds. Accept cash, card, or any payment method.
+<!-- Features Manifesto -->
+<section class="border-t-2 border-black bg-white">
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black border-b-2 border-black">
+		<div class="p-10 md:p-14 lg:p-16 flex flex-col justify-between group hover:bg-[var(--color-brand)] hover:text-white transition-colors duration-300 cursor-default min-h-[400px]">
+			<div class="font-mono text-5xl font-bold opacity-20 group-hover:opacity-100 transition-opacity">01</div>
+			<div>
+				<h3 class="font-display text-4xl uppercase font-black mb-4">MULTI-TENANT<br />ARCHITECTURE</h3>
+				<p class="font-sans text-lg group-hover:text-white/90 font-medium">
+					Sign up as an owner and create your own business POS in seconds. Deploy globally, manage locally.
 				</p>
 			</div>
+		</div>
 
-			<div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-				<div
-					class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="h-5 w-5"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
-						/>
-					</svg>
-				</div>
-				<h3 class="font-semibold text-gray-900">Inventory tracking</h3>
-				<p class="mt-2 text-sm text-gray-500">
-					Know what's in stock at all times. Get low-stock alerts before you run out.
+		<div class="p-10 md:p-14 lg:p-16 flex flex-col justify-between group hover:bg-black hover:text-white transition-colors duration-300 cursor-default min-h-[400px]">
+			<div class="font-mono text-5xl font-bold opacity-20 group-hover:opacity-100 transition-opacity text-[var(--color-brand)]">02</div>
+			<div>
+				<h3 class="font-display text-4xl uppercase font-black mb-4">REAL-TIME<br />SYNC PROTOCOL</h3>
+				<p class="font-sans text-lg group-hover:text-white/90 font-medium">
+					WebSockets ensure all changes sync instantly across every connected employee. Zero lag.
 				</p>
 			</div>
+		</div>
 
-			<div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-				<div
-					class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="h-5 w-5"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
-						/>
-					</svg>
-				</div>
-				<h3 class="font-semibold text-gray-900">Sales reports</h3>
-				<p class="mt-2 text-sm text-gray-500">
-					Understand your business with clear daily, weekly, and monthly reports.
+		<div class="p-10 md:p-14 lg:p-16 flex flex-col justify-between group hover:bg-[#F4F4F0] transition-colors duration-300 cursor-default min-h-[400px]">
+			<div class="font-mono text-5xl font-bold opacity-20 transition-opacity text-[var(--color-brand)]">03</div>
+			<div>
+				<h3 class="font-display text-4xl uppercase font-black mb-4">INVENTORY &<br />PAYMENTS</h3>
+				<p class="font-sans text-lg text-black font-medium">
+					Track stock levels interactively. Manage transactions and generate invoices on the fly.
 				</p>
 			</div>
 		</div>
 	</div>
 </section>
 
-<!-- CTA banner -->
-{#if !data.user}
-	<section class="bg-indigo-600 px-4 py-16 text-center">
-		<div class="mx-auto max-w-xl">
-			<h2 class="text-2xl font-bold text-white">Ready to get started?</h2>
-			<p class="mt-3 text-indigo-200">
-				Create your free account and be up and running in minutes.
+<!-- Technical Readout Section -->
+<section class="bg-black text-white px-6 py-24 md:py-32 border-b-2 border-black overflow-hidden relative">
+	<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 relative z-10">
+		<div>
+			<h2 class="font-display text-5xl sm:text-6xl md:text-7xl font-black uppercase mb-8 leading-[0.9]">
+				RAW POWER.<br />
+				<span class="text-[var(--color-brand)]">NO BLOAT.</span>
+			</h2>
+			<p class="font-sans text-xl font-medium text-gray-300 max-w-xl mb-12">
+				MicroPOS drops the traditional SaaS overhead. Built on a monorepo with Turborepo, powered by AdonisJS and SvelteKit.
 			</p>
+			<div class="flex flex-col gap-4 font-mono text-sm uppercase font-bold w-full max-w-md">
+				<div class="flex justify-between border-b border-gray-800 pb-2">
+					<span class="text-gray-500">FRONTEND</span>
+					<span>SvelteKit 2 + Tailwind v4</span>
+				</div>
+				<div class="flex justify-between border-b border-gray-800 pb-2">
+					<span class="text-gray-500">BACKEND</span>
+					<span>AdonisJS 6 (Node.js)</span>
+				</div>
+				<div class="flex justify-between border-b border-gray-800 pb-2">
+					<span class="text-gray-500">DATABASE</span>
+					<span>PostgreSQL + Lucid ORM</span>
+				</div>
+				<div class="flex justify-between pb-2">
+					<span class="text-gray-500">LANGUAGE</span>
+					<span>TypeScript (Strict)</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-[#111] border-2 border-gray-800 p-6 md:p-10 relative group">
+			<div class="absolute top-0 right-0 p-4 font-mono text-xs text-[var(--color-brand)]">SYS.LOG</div>
+			<div class="font-mono text-sm md:text-base leading-relaxed text-gray-400 font-bold">
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">01</span><span class="text-[var(--color-brand)]">npm</span> <span class="text-white">run dev</span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">02</span><span class="text-gray-500">&gt; micropos@1.0.0 dev</span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">03</span><span class="text-gray-500">&gt; turbo run dev</span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">04</span><span></span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">05</span><span class="text-green-500">api:</span> <span class="text-white">started server on http://localhost:3333</span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">06</span><span class="text-green-500">api:</span> <span class="text-white">database connected successfully (postgres)</span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">07</span><span class="text-blue-500">web:</span> <span class="text-white">VITE v5.0.0 ready in 142 ms</span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">08</span><span class="text-blue-500">web:</span> <span class="text-white">➜  Local:   http://localhost:5173/</span></div>
+				<div class="flex gap-4 mb-2"><span class="text-gray-600">09</span><span class="text-gray-500">...</span></div>
+				<div class="flex gap-4 mt-8"><span class="text-gray-600">10</span><span class="text-[var(--color-brand)] animate-pulse">█</span></div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Final CTA -->
+{#if !data.user}
+	<section class="bg-[var(--color-brand)] px-6 py-24 md:py-32 text-center border-b-2 border-black">
+		<div class="max-w-4xl mx-auto">
+			<h2 class="font-display text-5xl sm:text-7xl font-black uppercase text-white mb-8 leading-[0.9]">
+				STOP PAYING FOR<br />BASIC TOOLS.
+			</h2>
 			<a
 				href="/register"
-				class="mt-8 inline-block rounded-md bg-white px-6 py-3 text-sm font-semibold text-indigo-600 shadow-sm transition-colors hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600"
+				class="inline-block px-10 py-6 border-2 border-black bg-white text-black text-xl font-mono font-bold uppercase brutal-shadow hover:bg-black hover:text-white transition-colors"
 			>
-				Create free account
+				INITIALIZE STOREFRONT
 			</a>
 		</div>
 	</section>
