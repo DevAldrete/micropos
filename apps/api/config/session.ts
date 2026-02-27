@@ -44,13 +44,8 @@ const sessionConfig = defineConfig({
   cookie: {
     path: '/',
     httpOnly: true,
-    // DEV: false so sameSite:'none' works without HTTPS locally.
-    // PROD: must be true — HTTPS is required for sameSite:'none' in production.
     secure: app.inProduction,
-    // DEV: 'none' required for cross-origin (different ports on localhost).
-    // PROD: change to 'lax' once web + API share the same origin (recommended),
-    //       or keep 'none' + ensure secure:true if cross-origin is needed in prod.
-    sameSite: app.inProduction ? 'lax' : 'none',
+    sameSite: 'lax',
   },
 
   /**

@@ -112,11 +112,8 @@ function forwardCookies(
     cookies.set(name, value, {
       path: (attrMap["path"] as string) ?? "/",
       httpOnly: "httponly" in attrMap,
-      // DEV: false — must be true in prod (HTTPS required for sameSite:'none').
-      secure: false,
-      // DEV: 'none' required for cross-origin (localhost:5173 → localhost:3333).
-      // PROD: change to 'lax' once web + API are on the same origin.
-      sameSite: "none",
+      secure: false, // Must be true in production with HTTPS
+      sameSite: "lax",
       maxAge: attrMap["max-age"] ? Number(attrMap["max-age"]) : undefined,
     });
   }
