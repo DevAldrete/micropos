@@ -80,3 +80,9 @@ blob-report/
 .vercel
 # Docker
 docker-compose.override.yml
+
+# AGENTS.md
+.agents/
+skills-lock.json
+SKILL.md
+AGENTS.md

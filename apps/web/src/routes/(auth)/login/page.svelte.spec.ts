@@ -15,7 +15,7 @@ describe("(auth)/login/+page.svelte", () => {
     render(LoginPage, { props: { form: null } });
 
     await expect
-      .element(page.getByRole("button", { name: /sign in/i }))
+      .element(page.getByRole("button", { name: /authenticate/i }))
       .toBeInTheDocument();
   });
 
