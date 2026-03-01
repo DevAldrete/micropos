@@ -169,7 +169,7 @@
 											{/if}
 										</div>
 										<span class="font-mono text-xs text-gray-400">ID:{cat.id}</span>
-									</button>
+									</div>
 								{/if}
 							</li>
 						{/each}
@@ -309,7 +309,7 @@
 										</td>
 									</tr>
 								{:else}
-									<tr onclick={() => editingProductId = prod.id} onkeydown={(e) => e.key === 'Enter' && (editingProductId = prod.id)} tabindex="0" class="hover:bg-[var(--color-brand)] hover:text-white transition-colors group cursor-crosshair">
+									<tr onclick={() => editingProductId = prod.id} class="hover:bg-[var(--color-brand)] hover:text-white transition-colors group cursor-crosshair">
 										<td class="px-5 py-4 text-gray-500 group-hover:text-white/80 transition-colors">
 											{prod.sku || `ID-${prod.id.toString().padStart(4, '0')}`}
 										</td>

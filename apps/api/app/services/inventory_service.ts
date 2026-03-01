@@ -34,6 +34,37 @@ export default class InventoryService {
   }
 
   /**
+   * Update an existing category
+   */
+  async updateCategory(
+    tenantId: number,
+    categoryId: number,
+    payload: Partial<CreateCategoryPayload>
+  ): Promise<Category> {
+    const category = await Category.query()
+      .where('tenantId', tenantId)
+      .where('id', categoryId)
+      .firstOrFail()
+
+    category.merge(payload)
+    await category.save()
+
+    return category
+  }
+
+  /**
+   * Delete a category
+   */
+  async deleteCategory(tenantId: number, categoryId: number): Promise<void> {
+    const category = await Category.query()
+      .where('tenantId', tenantId)
+      .where('id', categoryId)
+      .firstOrFail()
+
+    await category.delete()
+  }
+
+  /**
    * Create a new product for a tenant
    */
   async createProduct(tenantId: number, payload: CreateProductPayload): Promise<Product> {
@@ -91,5 +122,17 @@ export default class InventoryService {
     await product.save()
 
     return product
+  }
+
+  /**
+   * Delete a product
+   */
+  async deleteProduct(tenantId: number, productId: number): Promise<void> {
+    const product = await Product.query()
+      .where('tenantId', tenantId)
+      .where('id', productId)
+      .firstOrFail()
+
+    await product.delete()
   }
 }

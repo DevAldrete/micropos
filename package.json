@@ -43,5 +43,8 @@
     "**/*.{json,md,yaml,yml}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "cookie": "^1.1.1"
   }
 }

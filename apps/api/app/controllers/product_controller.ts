@@ -34,4 +34,13 @@ export default class ProductController {
     const product = await inventoryService.updateProduct(tenantId, productId, payload)
     return response.json(product)
   }
+
+  @inject()
+  async destroy({ params, response }: HttpContext, inventoryService: InventoryService) {
+    const tenantId = Number(params.tenant_id)
+    const productId = Number(params.id)
+
+    await inventoryService.deleteProduct(tenantId, productId)
+    return response.noContent()
+  }
 }

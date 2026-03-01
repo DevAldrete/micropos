@@ -92,7 +92,11 @@ function forwardCookies(
     if (eqIdx === -1) continue;
 
     const name = nameValue.slice(0, eqIdx);
-    const value = nameValue.slice(eqIdx + 1);
+    const rawValue = nameValue.slice(eqIdx + 1);
+
+    // SvelteKit's cookies.set will automatically URL-encode the value again,
+    // so we must decode it here to prevent double-encoding.
+    const value = decodeURIComponent(rawValue);
 
     const attrMap: Record<string, string | boolean> = {};
     for (const attr of attributes) {
