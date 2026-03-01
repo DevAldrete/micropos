@@ -22,6 +22,29 @@ export interface ApiError {
   message: string;
 }
 
+export interface Tenant {
+  id: number;
+  name: string;
+}
+
+export interface Category {
+  id: number;
+  tenantId: number;
+  name: string;
+  description: string | null;
+}
+
+export interface Product {
+  id: number;
+  tenantId: number;
+  categoryId: number | null;
+  name: string;
+  sku: string | null;
+  description: string | null;
+  price: number;
+  stock: number;
+}
+
 // --------------------------------------------------------------------------
 // Core fetch wrapper
 // --------------------------------------------------------------------------

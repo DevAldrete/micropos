@@ -118,9 +118,9 @@
 					<button class="w-full border-2 border-black bg-white text-black font-mono text-sm font-bold uppercase tracking-widest py-4 hover:bg-gray-100 transition-colors brutal-shadow">
 						SCAN BARCODE
 					</button>
-					<button class="w-full border-2 border-black bg-white text-black font-mono text-sm font-bold uppercase tracking-widest py-4 hover:bg-gray-100 transition-colors brutal-shadow">
-						ADD INVENTORY
-					</button>
+					<a href="/dashboard/inventory" class="w-full text-center block border-2 border-black bg-white text-black font-mono text-sm font-bold uppercase tracking-widest py-4 hover:bg-[var(--color-brand)] hover:text-white transition-colors brutal-shadow">
+						INVENTORY_DB
+					</a>
 				</div>
 			</div>
 		</div>
