@@ -1,4 +1,5 @@
 import { PUBLIC_API_URL } from "$env/static/public";
+import { browser } from "$app/environment";
 import type { AuthUser } from "../app.js";
 
 // --------------------------------------------------------------------------
@@ -20,6 +21,29 @@ export interface ValidationError {
 /** Shape of a generic API error response (e.g. 400, 401, 500). */
 export interface ApiError {
   message: string;
+}
+
+export interface Tenant {
+  id: number;
+  name: string;
+}
+
+export interface Category {
+  id: number;
+  tenantId: number;
+  name: string;
+  description: string | null;
+}
+
+export interface Product {
+  id: number;
+  tenantId: number;
+  categoryId: number | null;
+  name: string;
+  sku: string | null;
+  description: string | null;
+  price: number;
+  stock: number;
 }
 
 // --------------------------------------------------------------------------
@@ -56,7 +80,18 @@ export async function apiFetch(
     headers.set("Cookie", cookieHeader);
   }
 
-  return fetch(`${PUBLIC_API_URL}${path}`, {
+  let baseUrl = PUBLIC_API_URL;
+
+  // On the server, route requests to the internal Docker network if configured
+  if (
+    !browser &&
+    typeof process !== "undefined" &&
+    process.env["INTERNAL_API_URL"]
+  ) {
+    baseUrl = process.env["INTERNAL_API_URL"];
+  }
+
+  return fetch(`${baseUrl}${path}`, {
     ...init,
     headers,
     // Required for the browser to send/receive cookies cross-origin.

@@ -59,13 +59,16 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         # Baked into the bundle at build time by SvelteKit ($env/static/public)
-        PUBLIC_API_URL: ${PUBLIC_API_URL:-http://api:3333}
+        PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:3333}
     restart: unless-stopped
     environment:
       PORT: 3000
       NODE_ENV: development
       # Expose the API URL to the SvelteKit server-side runtime
-      PUBLIC_API_URL: ${PUBLIC_API_URL:-http://api:3333}
+      PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:3333}
+      # Tell the SvelteKit Node.js server how to reach the API inside the Docker network
+      INTERNAL_API_URL: http://api:3333
+      DEBUG_WEB: "true"
     ports:
       - "3000:3000"
     depends_on:

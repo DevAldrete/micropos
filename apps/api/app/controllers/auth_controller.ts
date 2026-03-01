@@ -1,11 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import Tenant from '#models/tenant'
+import TenantMember from '#models/tenant_member'
 import { registerValidator, loginValidator } from '#validators/auth_validator'
 
 export default class AuthController {
   /**
    * POST /auth/register
-   * Creates a new user account and starts an authenticated session.
+   * Creates a new user account, a default storefront, and starts an authenticated session.
    */
   async register({ request, auth, response }: HttpContext): Promise<void> {
     const data = await request.validateUsing(registerValidator)
@@ -14,6 +16,18 @@ export default class AuthController {
       fullName: data.fullName,
       email: data.email,
       password: data.password,
+    })
+
+    // Auto-provision a default Tenant for the new user
+    const tenant = await Tenant.create({
+      name: `${data.fullName}'s Store`,
+      slug: `${data.fullName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-store-${Date.now()}`,
+    })
+
+    await TenantMember.create({
+      tenantId: tenant.id,
+      userId: user.id,
+      role: 'owner',
     })
 
     await auth.use('web').login(user)

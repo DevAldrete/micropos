@@ -3,7 +3,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#models/user'
 
 test.group('Auth / login', (group) => {
-  group.each.setup(() => testUtils.db().truncate())
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
 
   test('returns 200 and user data with valid credentials', async ({ client }) => {
     await User.create({
