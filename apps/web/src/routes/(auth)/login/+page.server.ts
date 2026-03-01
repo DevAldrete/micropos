@@ -37,10 +37,12 @@ export const actions: Actions = {
     }
 
     if (response.ok) {
-      // Relay the AdonisJS session cookie to the browser.
-      // Since this fetch runs server-side, the Set-Cookie header lands here,
-      // not in the browser. We must forward it explicitly.
-      forwardCookies(response, cookies);
+      try {
+        console.log("Login OK, forwarding cookies...");
+        forwardCookies(response, cookies);
+      } catch (err) {
+        console.error("Error forwarding cookies:", err);
+      }
       redirect(302, "/dashboard");
     }
 
