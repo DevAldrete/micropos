@@ -46,6 +46,18 @@ export interface Product {
   stock: number;
 }
 
+/** Paginated response shape returned by Lucid's `.paginate()` */
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    perPage: number;
+    currentPage: number;
+    lastPage: number;
+    firstPage: number;
+  };
+}
+
 // --------------------------------------------------------------------------
 // Core fetch wrapper
 // --------------------------------------------------------------------------

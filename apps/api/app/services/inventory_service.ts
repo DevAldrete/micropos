@@ -1,5 +1,6 @@
 import Category from '#models/category'
 import Product from '#models/product'
+import type { ModelPaginatorContract } from '@adonisjs/lucid/types/model'
 
 interface CreateCategoryPayload {
   name: string
@@ -94,16 +95,25 @@ export default class InventoryService {
   }
 
   /**
-   * Get all products for a tenant
+   * Get products for a tenant, optionally paginated.
+   * When page/perPage are provided, returns a paginated result.
+   * Otherwise returns all products (used by POS terminal).
    */
-  async getProducts(tenantId: number, categoryId?: number): Promise<Product[]> {
+  async getProducts(
+    tenantId: number,
+    options: { categoryId?: number; page?: number; perPage?: number } = {}
+  ): Promise<Product[] | ModelPaginatorContract<Product>> {
     const query = Product.query()
       .where('tenantId', tenantId)
       .preload('category')
       .orderBy('name', 'asc')
 
-    if (categoryId) {
-      query.where('categoryId', categoryId)
+    if (options.categoryId) {
+      query.where('categoryId', options.categoryId)
+    }
+
+    if (options.page) {
+      return await query.paginate(options.page, options.perPage ?? 20)
     }
 
     return await query

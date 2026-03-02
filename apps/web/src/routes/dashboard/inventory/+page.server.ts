@@ -1,40 +1,71 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types.js";
-import { apiFetch, type Tenant, type Category, type Product } from "$lib/api";
+import {
+  apiFetch,
+  type Category,
+  type Product,
+  type PaginatedResponse,
+} from "$lib/api";
 
-export const load: PageServerLoad = async ({ locals, request }) => {
+export const load: PageServerLoad = async ({
+  locals,
+  request,
+  parent,
+  url,
+}) => {
   if (!locals.user) {
     redirect(302, "/login");
   }
 
+  const { tenants, activeTenantId } = await parent();
   const cookieHeader = request.headers.get("cookie") ?? undefined;
 
-  // 1. Fetch tenants
-  const tenantsRes = await apiFetch("/api/v1/tenants", {}, cookieHeader);
-  if (!tenantsRes.ok) {
-    // Return empty state or handle error
-    return { tenants: [], categories: [], products: [] };
+  if (!activeTenantId || tenants.length === 0) {
+    return {
+      tenants: [],
+      categories: [],
+      products: {
+        data: [],
+        meta: {
+          total: 0,
+          perPage: 20,
+          currentPage: 1,
+          lastPage: 1,
+          firstPage: 1,
+        },
+      },
+      activeTenantId: null,
+    };
   }
 
-  const tenants = await tenantsRes.json();
+  const page = url.searchParams.get("page") ?? "1";
+  const perPage = url.searchParams.get("perPage") ?? "20";
 
-  if (tenants.length === 0) {
-    return { tenants: [], categories: [], products: [] };
-  }
-
-  // Pick the first tenant for now
-  const activeTenantId = tenants[0].id;
-
-  // 2. Fetch categories & products in parallel
+  // Fetch categories & products in parallel
   const [categoriesRes, productsRes] = await Promise.all([
     apiFetch(`/api/v1/t/${activeTenantId}/categories`, {}, cookieHeader),
-    apiFetch(`/api/v1/t/${activeTenantId}/products`, {}, cookieHeader),
+    apiFetch(
+      `/api/v1/t/${activeTenantId}/products?page=${page}&perPage=${perPage}`,
+      {},
+      cookieHeader,
+    ),
   ]);
 
   const categories: Category[] = categoriesRes.ok
     ? await categoriesRes.json()
     : [];
-  const products: Product[] = productsRes.ok ? await productsRes.json() : [];
+  const products: PaginatedResponse<Product> = productsRes.ok
+    ? await productsRes.json()
+    : {
+        data: [],
+        meta: {
+          total: 0,
+          perPage: 20,
+          currentPage: 1,
+          lastPage: 1,
+          firstPage: 1,
+        },
+      };
 
   return {
     user: locals.user,

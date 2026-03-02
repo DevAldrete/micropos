@@ -20,7 +20,7 @@ router.get('/', async () => {
   return { hello: 'world' }
 })
 
-// Authentication Routes
+// Authentication Routes (rate-limited: 10 attempts per 60s per IP)
 router
   .group(() => {
     router.post('/register', [AuthController, 'register'])
@@ -29,6 +29,7 @@ router
     router.get('/me', [AuthController, 'me']).use(middleware.auth())
   })
   .prefix('/auth')
+  .use(middleware.throttle({ maxAttempts: 10, windowSeconds: 60 }))
 
 // Protected API Routes
 router
@@ -37,7 +38,7 @@ router
     router.get('/tenants', [TenantController, 'index'])
     router.post('/tenants', [TenantController, 'store'])
 
-    // Multi-tenant resources
+    // Multi-tenant resources (tenant membership enforced by middleware)
     router
       .group(() => {
         // Inventory: Categories
@@ -59,6 +60,7 @@ router
         router.post('/orders/:id/pay', [OrderController, 'pay'])
       })
       .prefix('/t/:tenant_id')
+      .use(middleware.tenant())
   })
   .prefix('/api/v1')
   .use(middleware.auth())

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from "$app/forms";
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
 	import { fade, slide } from "svelte/transition";
 	import type { PageData } from "./$types";
 
@@ -12,19 +14,29 @@
 	let editingCategoryId = $state<number | null>(null);
 	let editingProductId = $state<number | null>(null);
 
+	// Pagination from server data
+	let productsMeta = $derived(data.products?.meta ?? { total: 0, perPage: 20, currentPage: 1, lastPage: 1, firstPage: 1 });
+	let productsData = $derived(data.products?.data ?? []);
+
 	// Derived totals
-	let totalProducts = $derived(data.products?.length || 0);
+	let totalProducts = $derived(productsMeta.total);
 	let totalCategories = $derived(data.categories?.length || 0);
-	let lowStockCount = $derived(data.products?.filter((p: any) => p.stock < 10).length || 0);
+	let lowStockCount = $derived(productsData.filter((p: any) => p.stock < 10).length || 0);
 
 	let filteredProducts = $derived(
-		data.products?.filter((p: any) => {
+		productsData.filter((p: any) => {
 			if (!searchQuery) return true;
 			const q = searchQuery.toLowerCase();
 			return p.name.toLowerCase().includes(q) || 
 			       (p.sku && p.sku.toLowerCase().includes(q));
 		}) || []
 	);
+
+	function goToPage(pageNum: number): void {
+		const params = new URLSearchParams($page.url.searchParams);
+		params.set("page", String(pageNum));
+		goto(`?${params.toString()}`, { invalidateAll: true });
+	}
 </script>
 
 <svelte:head>
@@ -266,7 +278,7 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y-2 divide-black">
-						{#if data.products?.length === 0}
+						{#if productsData.length === 0}
 							<tr>
 								<td colspan="5" class="p-8 text-center text-gray-500 uppercase">Awaiting Input...</td>
 							</tr>
@@ -338,6 +350,47 @@
 					</tbody>
 				</table>
 			</div>
+
+			<!-- Pagination Controls -->
+			{#if productsMeta.lastPage > 1}
+				<div class="flex items-center justify-between bg-white border-2 border-black brutal-shadow p-4 font-mono text-sm">
+					<span class="text-gray-500 font-bold uppercase text-xs">
+						Page {productsMeta.currentPage} of {productsMeta.lastPage} &mdash; {productsMeta.total} records
+					</span>
+					<div class="flex gap-2">
+						<button
+							onclick={() => goToPage(productsMeta.currentPage - 1)}
+							disabled={productsMeta.currentPage <= 1}
+							class="px-3 py-1 border-2 border-black font-bold uppercase text-xs
+								{productsMeta.currentPage <= 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-black hover:bg-black hover:text-white transition-colors'}"
+						>
+							&lt; Prev
+						</button>
+						{#each Array(productsMeta.lastPage) as _, i}
+							{@const pageNum = i + 1}
+							{#if productsMeta.lastPage <= 7 || pageNum === 1 || pageNum === productsMeta.lastPage || (pageNum >= productsMeta.currentPage - 1 && pageNum <= productsMeta.currentPage + 1)}
+								<button
+									onclick={() => goToPage(pageNum)}
+									class="px-3 py-1 border-2 border-black font-bold text-xs
+										{pageNum === productsMeta.currentPage ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white transition-colors'}"
+								>
+									{pageNum}
+								</button>
+							{:else if pageNum === productsMeta.currentPage - 2 || pageNum === productsMeta.currentPage + 2}
+								<span class="px-1 py-1 text-gray-400 font-bold">...</span>
+							{/if}
+						{/each}
+						<button
+							onclick={() => goToPage(productsMeta.currentPage + 1)}
+							disabled={productsMeta.currentPage >= productsMeta.lastPage}
+							class="px-3 py-1 border-2 border-black font-bold uppercase text-xs
+								{productsMeta.currentPage >= productsMeta.lastPage ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-black hover:bg-black hover:text-white transition-colors'}"
+						>
+							Next &gt;
+						</button>
+					</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 	{/if}

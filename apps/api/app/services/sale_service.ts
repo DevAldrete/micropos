@@ -3,6 +3,7 @@ import Order from '#models/order'
 import OrderItem from '#models/order_item'
 import Payment from '#models/payment'
 import Product from '#models/product'
+import type { ModelPaginatorContract } from '@adonisjs/lucid/types/model'
 
 interface OrderItemPayload {
   productId: number
@@ -152,12 +153,19 @@ export default class SaleService {
   }
 
   /**
-   * List recent orders for a tenant
+   * List orders for a tenant with pagination
    */
-  async listOrders(tenantId: number): Promise<Order[]> {
+  async listOrders(
+    tenantId: number,
+    options: { page?: number; perPage?: number } = {}
+  ): Promise<ModelPaginatorContract<Order>> {
+    const page = options.page ?? 1
+    const perPage = options.perPage ?? 20
+
     return await Order.query()
       .where('tenantId', tenantId)
       .preload('customer')
       .orderBy('createdAt', 'desc')
+      .paginate(page, perPage)
   }
 }
