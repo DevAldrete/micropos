@@ -48,8 +48,8 @@
           <span class="font-bold uppercase {order.status === 'completed' ? 'text-green-600' : 'text-yellow-600'}">{order.status}</span>
         </div>
         <div class="text-right">
-          <span class="text-gray-500 block text-xs font-bold uppercase">Customer ID</span>
-          <span class="font-bold">{order.customerId || 'WALK-IN'}</span>
+          <span class="text-gray-500 block text-xs font-bold uppercase">Customer</span>
+          <span class="font-bold">{order.customer?.name || 'WALK-IN'}</span>
         </div>
       </div>
 

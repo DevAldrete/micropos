@@ -50,12 +50,18 @@
 					>
 						Terminal
 					</a>
-					<a 
-						href="/dashboard/orders" 
-						class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/orders') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
-					>
-						Ledger
-					</a>
+				<a 
+					href="/dashboard/customers" 
+					class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/customers') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
+				>
+					Registry
+				</a>
+				<a 
+					href="/dashboard/orders" 
+					class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/orders') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
+				>
+					Ledger
+				</a>
 				</div>
 			</div>
 
@@ -115,6 +121,7 @@
 		<a href="/dashboard" class="px-4 py-3 border-r-2 border-black {$page.url.pathname === '/dashboard' ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100'}">Overview</a>
 		<a href="/dashboard/inventory" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/inventory') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100'}">Inventory</a>
 		<a href="/dashboard/terminal" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/terminal') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Terminal</a>
+		<a href="/dashboard/customers" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/customers') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Registry</a>
 		<a href="/dashboard/orders" class="px-4 py-3 {$page.url.pathname.startsWith('/dashboard/orders') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Ledger</a>
 	</div>
 

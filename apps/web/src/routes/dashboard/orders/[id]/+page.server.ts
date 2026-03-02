@@ -2,24 +2,23 @@ import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types.js";
 import { apiFetch } from "$lib/api";
 
-export const load: PageServerLoad = async ({ locals, request, params }) => {
+export const load: PageServerLoad = async ({
+  locals,
+  request,
+  params,
+  parent,
+}) => {
   if (!locals.user) {
     redirect(302, "/login");
   }
 
+  const { tenants, activeTenantId } = await parent();
   const cookieHeader = request.headers.get("cookie") ?? undefined;
 
-  const tenantsRes = await apiFetch("/api/v1/tenants", {}, cookieHeader);
-  if (!tenantsRes.ok) {
+  if (!activeTenantId || tenants.length === 0) {
     return { order: null };
   }
 
-  const tenants = await tenantsRes.json();
-  if (tenants.length === 0) {
-    return { order: null };
-  }
-
-  const activeTenantId = tenants[0].id;
   const orderId = params.id;
 
   // Fetch single order

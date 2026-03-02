@@ -46,6 +46,16 @@ export interface Product {
   stock: number;
 }
 
+export interface Customer {
+  id: number;
+  tenantId: number;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+}
+
 /** Paginated response shape returned by Lucid's `.paginate()` */
 export interface PaginatedResponse<T> {
   data: T[];
