@@ -9,6 +9,11 @@
 		data.tenants?.find((t: any) => t.id === data.activeTenantId) ?? null
 	);
 
+	// Role-based navigation gating
+	const userRole = $derived(data.userRole ?? 'employee');
+	const isOwner = $derived(userRole === 'owner');
+	const isAdminOrAbove = $derived(userRole === 'owner' || userRole === 'admin');
+
 	async function switchTenant(tenantId: number) {
 		// Set cookie via a simple document.cookie (client-side)
 		document.cookie = `activeTenantId=${tenantId};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
@@ -38,30 +43,42 @@
 					>
 						Overview
 					</a>
-					<a 
-						href="/dashboard/inventory" 
-						class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/inventory') ? 'bg-[var(--color-brand)]' : ''}"
-					>
-						Inventory
-					</a>
+					{#if isAdminOrAbove}
+						<a 
+							href="/dashboard/inventory" 
+							class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/inventory') ? 'bg-[var(--color-brand)]' : ''}"
+						>
+							Inventory
+						</a>
+					{/if}
 					<a 
 						href="/dashboard/terminal" 
 						class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/terminal') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
 					>
 						Terminal
 					</a>
-				<a 
-					href="/dashboard/customers" 
-					class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/customers') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
-				>
-					Registry
-				</a>
-				<a 
-					href="/dashboard/orders" 
-					class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/orders') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
-				>
-					Ledger
-				</a>
+					{#if isAdminOrAbove}
+						<a 
+							href="/dashboard/customers" 
+							class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/customers') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
+						>
+							Registry
+						</a>
+					{/if}
+					<a 
+						href="/dashboard/orders" 
+						class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/orders') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
+					>
+						Ledger
+					</a>
+					{#if isOwner}
+						<a 
+							href="/dashboard/team" 
+							class="px-4 py-2 hover:bg-[var(--color-brand)] transition-colors {$page.url.pathname.startsWith('/dashboard/team') ? 'bg-[var(--color-brand)] text-white' : 'text-gray-500 hover:text-white'}"
+						>
+							Team
+						</a>
+					{/if}
 				</div>
 			</div>
 
@@ -119,10 +136,17 @@
 	<!-- Mobile Nav (Visible only on small screens) -->
 	<div class="md:hidden bg-white border-b-2 border-black flex overflow-x-auto font-mono text-xs font-bold uppercase whitespace-nowrap">
 		<a href="/dashboard" class="px-4 py-3 border-r-2 border-black {$page.url.pathname === '/dashboard' ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100'}">Overview</a>
-		<a href="/dashboard/inventory" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/inventory') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100'}">Inventory</a>
+		{#if isAdminOrAbove}
+			<a href="/dashboard/inventory" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/inventory') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100'}">Inventory</a>
+		{/if}
 		<a href="/dashboard/terminal" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/terminal') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Terminal</a>
-		<a href="/dashboard/customers" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/customers') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Registry</a>
-		<a href="/dashboard/orders" class="px-4 py-3 {$page.url.pathname.startsWith('/dashboard/orders') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Ledger</a>
+		{#if isAdminOrAbove}
+			<a href="/dashboard/customers" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/customers') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Registry</a>
+		{/if}
+		<a href="/dashboard/orders" class="px-4 py-3 border-r-2 border-black {$page.url.pathname.startsWith('/dashboard/orders') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Ledger</a>
+		{#if isOwner}
+			<a href="/dashboard/team" class="px-4 py-3 {$page.url.pathname.startsWith('/dashboard/team') ? 'bg-[var(--color-brand)] text-white' : 'hover:bg-gray-100 text-gray-500'}">Team</a>
+		{/if}
 	</div>
 
 	<!-- Page Content -->

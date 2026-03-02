@@ -26,6 +26,7 @@ export interface ApiError {
 export interface Tenant {
   id: number;
   name: string;
+  role: string;
 }
 
 export interface Category {
@@ -54,6 +55,18 @@ export interface Customer {
   phone: string | null;
   createdAt: string;
   updatedAt: string | null;
+}
+
+export interface TeamMember {
+  id: number;
+  userId: number;
+  role: string;
+  createdAt: string;
+  user: {
+    id: number;
+    fullName: string | null;
+    email: string;
+  };
 }
 
 /** Paginated response shape returned by Lucid's `.paginate()` */

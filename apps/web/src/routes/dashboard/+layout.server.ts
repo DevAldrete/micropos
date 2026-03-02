@@ -6,9 +6,10 @@ import { apiFetch, type Tenant } from "$lib/api";
  * Dashboard layout load function.
  *
  * - Guards unauthenticated users (redirect to /login)
- * - Fetches the user's tenants
+ * - Fetches the user's tenants (now includes role per tenant)
  * - Resolves the active tenant from the `activeTenantId` cookie
  *   (set by the tenant switcher), falling back to the first tenant
+ * - Exposes `userRole` for the active tenant so pages can gate UI by permission
  */
 export const load: LayoutServerLoad = async ({ locals, request, cookies }) => {
   if (!locals.user) {
@@ -23,21 +24,30 @@ export const load: LayoutServerLoad = async ({ locals, request, cookies }) => {
   // Read preferred tenant from cookie, fallback to first
   const savedTenantId = cookies.get("activeTenantId");
   let activeTenantId: number | null = null;
+  let userRole: string | null = null;
 
   if (tenants.length > 0) {
+    let activeTenant: Tenant | undefined;
+
     if (savedTenantId) {
       const parsed = Number(savedTenantId);
       // Validate it's actually a tenant the user belongs to
-      const found = tenants.find((t) => t.id === parsed);
-      activeTenantId = found ? found.id : tenants[0].id;
+      activeTenant = tenants.find((t) => t.id === parsed);
+      if (!activeTenant) {
+        activeTenant = tenants[0];
+      }
     } else {
-      activeTenantId = tenants[0].id;
+      activeTenant = tenants[0];
     }
+
+    activeTenantId = activeTenant.id;
+    userRole = activeTenant.role ?? null;
   }
 
   return {
     user: locals.user,
     tenants,
     activeTenantId,
+    userRole,
   };
 };
