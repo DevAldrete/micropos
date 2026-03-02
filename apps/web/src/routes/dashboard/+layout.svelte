@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { getTransmit, subscribeToTenant } from '$lib/transmit';
+
 	let { children, data } = $props();
 
 	let showTenantMenu = $state(false);
@@ -21,6 +24,82 @@
 		// Reload current page data with the new tenant
 		await invalidateAll();
 	}
+
+	// -----------------------------------------------------------------------
+	// Real-time SSE via @adonisjs/transmit
+	// -----------------------------------------------------------------------
+
+	type ConnectionStatus = 'connected' | 'disconnected' | 'reconnecting' | 'initializing';
+	let connectionStatus = $state<ConnectionStatus>('initializing');
+
+	const statusLabel = $derived(
+		connectionStatus === 'connected'
+			? 'SYS.ONLINE'
+			: connectionStatus === 'reconnecting'
+				? 'SYS.RECONNECTING'
+				: connectionStatus === 'disconnected'
+					? 'SYS.OFFLINE'
+					: 'SYS.INIT'
+	);
+
+	const statusColor = $derived(
+		connectionStatus === 'connected'
+			? 'text-green-500 border-green-500 bg-green-500/10'
+			: connectionStatus === 'reconnecting'
+				? 'text-yellow-500 border-yellow-500 bg-yellow-500/10'
+				: 'text-red-500 border-red-500 bg-red-500/10'
+	);
+
+	const dotColor = $derived(
+		connectionStatus === 'connected'
+			? 'bg-green-500'
+			: connectionStatus === 'reconnecting'
+				? 'bg-yellow-500'
+				: 'bg-red-500'
+	);
+
+	// Subscribe to tenant channels whenever activeTenantId changes.
+	// The $effect automatically cleans up (unsubscribes) when tenantId changes
+	// or when the component is destroyed.
+	$effect(() => {
+		const tenantId = data.activeTenantId;
+		if (!browser || !tenantId) return;
+
+		const transmit = getTransmit();
+
+		// Wire connection status events
+		const onConnected = () => {
+			connectionStatus = 'connected';
+		};
+		const onDisconnected = () => {
+			connectionStatus = 'disconnected';
+		};
+		const onReconnecting = () => {
+			connectionStatus = 'reconnecting';
+		};
+
+		transmit.on('connected', onConnected);
+		transmit.on('disconnected', onDisconnected);
+		transmit.on('reconnecting', onReconnecting);
+
+		// Subscribe to all four tenant channels
+		let unsubscribe: (() => void) | null = null;
+
+		subscribeToTenant(tenantId, (_channel, _payload) => {
+			// Any mutation on any channel: refresh all SvelteKit load data
+			invalidateAll();
+		}).then((unsub) => {
+			unsubscribe = unsub;
+		});
+
+		// Cleanup: unsubscribe from channels + remove event listeners
+		return () => {
+			unsubscribe?.();
+			transmit.off('connected', onConnected);
+			transmit.off('disconnected', onDisconnected);
+			transmit.off('reconnecting', onReconnecting);
+		};
+	});
 </script>
 
 <div class="min-h-screen flex flex-col bg-[var(--color-surface)]">
@@ -120,9 +199,9 @@
 					</div>
 				{/if}
 
-				<div class="hidden md:flex items-center gap-2 text-green-500 border border-green-500 px-2 py-1 bg-green-500/10">
-					<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-					SYS.ONLINE
+			<div class="hidden md:flex items-center gap-2 border px-2 py-1 {statusColor}">
+					<span class="w-2 h-2 rounded-full {dotColor} {connectionStatus === 'connected' ? 'animate-pulse' : ''}"></span>
+					{statusLabel}
 				</div>
 				<form method="POST" action="/logout">
 					<button type="submit" class="hover:text-[var(--color-brand)] underline decoration-2 underline-offset-4 transition-colors">
