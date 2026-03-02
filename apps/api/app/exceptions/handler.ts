@@ -10,10 +10,28 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
   /**
    * The method is used for handling errors and returning
-   * response to the client
+   * response to the client.
+   *
+   * We shape all errors into a consistent JSON envelope so frontend
+   * consumers always get the same structure:
+   *
+   * ```json
+   * { "message": "...", "status": 422, "errors": [...] }
+   * ```
    */
   async handle(error: unknown, ctx: HttpContext) {
-    return super.handle(error, ctx)
+    const err = error as Record<string, unknown>
+    const status = typeof err?.['status'] === 'number' ? err['status'] : 500
+    const message = typeof err?.['message'] === 'string' ? err['message'] : 'Internal server error'
+
+    // VineJS validation errors carry a `messages` array
+    const errors = Array.isArray(err?.['messages']) ? err['messages'] : undefined
+
+    ctx.response.status(status).json({
+      message,
+      status,
+      ...(errors ? { errors } : {}),
+    })
   }
 
   /**

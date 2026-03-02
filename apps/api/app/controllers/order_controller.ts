@@ -5,9 +5,15 @@ import { createOrderValidator, processPaymentValidator } from '#validators/sale'
 
 export default class OrderController {
   @inject()
-  async index({ params, response }: HttpContext, saleService: SaleService) {
+  async index({ params, request, response }: HttpContext, saleService: SaleService) {
     const tenantId = Number(params.tenant_id)
-    const orders = await saleService.listOrders(tenantId)
+    const page = request.input('page')
+    const perPage = request.input('perPage')
+
+    const orders = await saleService.listOrders(tenantId, {
+      page: page ? Number(page) : undefined,
+      perPage: perPage ? Number(perPage) : undefined,
+    })
     return response.json(orders)
   }
 

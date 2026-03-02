@@ -8,6 +8,15 @@ interface CreateTenantPayload {
   slug: string
 }
 
+interface TenantWithRole {
+  id: number
+  name: string
+  slug: string
+  role: string
+  createdAt: string
+  updatedAt: string | null
+}
+
 export default class TenantService {
   /**
    * Creates a new tenant and assigns the user as the owner.
@@ -52,11 +61,14 @@ export default class TenantService {
   }
 
   /**
-   * Gets all tenants a user belongs to
+   * Gets all tenants a user belongs to, including the user's role in each
    */
-  async getUserTenants(userId: number): Promise<Tenant[]> {
+  async getUserTenants(userId: number): Promise<TenantWithRole[]> {
     const memberships = await TenantMember.query().where('userId', userId).preload('tenant')
 
-    return memberships.map((m) => m.tenant)
+    return memberships.map((m) => ({
+      ...m.tenant.serialize(),
+      role: m.role,
+    })) as TenantWithRole[]
   }
 }

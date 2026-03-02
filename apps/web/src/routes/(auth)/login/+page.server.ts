@@ -2,6 +2,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { apiFetch } from "$lib/api";
 import type { ValidationError, ApiError } from "$lib/api";
+import { forwardCookies } from "$lib/cookies";
 
 /** Redirect already-authenticated users away from the login page. */
 export const load: PageServerLoad = ({ locals }) => {
@@ -38,7 +39,6 @@ export const actions: Actions = {
 
     if (response.ok) {
       try {
-        console.log("Login OK, forwarding cookies...");
         forwardCookies(response, cookies);
       } catch (err) {
         console.error("Error forwarding cookies:", err);
@@ -72,63 +72,3 @@ export const actions: Actions = {
     });
   },
 };
-
-/**
- * Forwards Set-Cookie headers from an AdonisJS API response to the browser
- * via SvelteKit's cookies API.
- *
- * This is necessary because form actions run server-side: the API response's
- * Set-Cookie headers reach SvelteKit's Node process, not the browser directly.
- * We parse each cookie and re-set it so the browser receives it.
- *
- * DEV NOTE: sameSite is set to 'none' and secure to false to match
- * apps/api/config/session.ts settings for cross-origin local dev.
- * PROD NOTE: update to sameSite:'lax'/secure:true once on same origin + HTTPS.
- */
-function forwardCookies(
-  response: Response,
-  cookies: import("@sveltejs/kit").Cookies,
-): void {
-  // getSetCookie() returns each Set-Cookie header as a separate string (Node 18+).
-  const setCookieHeaders: string[] =
-    // @ts-ignore — getSetCookie is available in Node 18+ but not in older TS lib defs
-    typeof response.headers.getSetCookie === "function"
-      ? response.headers.getSetCookie()
-      : parseLegacySetCookie(response.headers.get("set-cookie") ?? "");
-
-  for (const header of setCookieHeaders) {
-    const [nameValue, ...attributes] = header.split(";").map((s) => s.trim());
-    const eqIdx = nameValue.indexOf("=");
-    if (eqIdx === -1) continue;
-
-    const name = nameValue.slice(0, eqIdx);
-    const rawValue = nameValue.slice(eqIdx + 1);
-
-    // The value from Adonis is already URL-encoded.
-    // SvelteKit's cookies.set will automatically URL-encode the value again,
-    // so we must decode it here to prevent double-encoding.
-    const value = decodeURIComponent(rawValue);
-
-    // Parse optional attributes
-    const attrMap: Record<string, string | boolean> = {};
-    for (const attr of attributes) {
-      const [k, v] = attr.split("=").map((s) => s.trim());
-      attrMap[k.toLowerCase()] = v ?? true;
-    }
-
-    cookies.set(name, value, {
-      path: (attrMap["path"] as string) ?? "/",
-      httpOnly: "httponly" in attrMap,
-      secure: false, // Must be true in production with HTTPS
-      sameSite: "lax",
-      maxAge: attrMap["max-age"] ? Number(attrMap["max-age"]) : undefined,
-    });
-  }
-}
-
-/** Fallback parser for environments where getSetCookie() is not available. */
-function parseLegacySetCookie(raw: string): string[] {
-  if (!raw) return [];
-  // Split on commas that precede a cookie name=value pattern.
-  return raw.split(/,(?=\s*\w+=)/);
-}

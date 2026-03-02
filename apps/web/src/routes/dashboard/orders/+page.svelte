@@ -1,11 +1,20 @@
 <script lang="ts">
   import type { PageData } from "./$types.js";
+  import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { fade } from "svelte/transition";
 
   let { data } = $props<{ data: PageData }>();
 
-  // Filter out pending orders if desired, or show all
-  let orders = $derived(data.orders || []);
+  // Paginated orders
+  let ordersMeta = $derived(data.orders?.meta ?? { total: 0, perPage: 20, currentPage: 1, lastPage: 1, firstPage: 1 });
+  let orders = $derived(data.orders?.data || []);
+
+  function goToPage(pageNum: number): void {
+    const params = new URLSearchParams($page.url.searchParams);
+    params.set("page", String(pageNum));
+    goto(`?${params.toString()}`, { invalidateAll: true });
+  }
 </script>
 
 <svelte:head>
@@ -38,7 +47,7 @@
     <div class="flex gap-4 font-mono text-sm bg-white border-2 border-black p-4 brutal-shadow z-10">
       <div class="flex flex-col">
         <span class="text-gray-500 font-bold uppercase text-xs">Total Records</span>
-        <span class="text-2xl font-black">{orders.length}</span>
+        <span class="text-2xl font-black">{ordersMeta.total}</span>
       </div>
       <div class="w-0.5 bg-black"></div>
       <div class="flex flex-col">
@@ -104,5 +113,46 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Pagination Controls -->
+    {#if ordersMeta.lastPage > 1}
+      <div class="flex items-center justify-between bg-white border-2 border-black brutal-shadow p-4 font-mono text-sm mt-6">
+        <span class="text-gray-500 font-bold uppercase text-xs">
+          Page {ordersMeta.currentPage} of {ordersMeta.lastPage} &mdash; {ordersMeta.total} records
+        </span>
+        <div class="flex gap-2">
+          <button
+            onclick={() => goToPage(ordersMeta.currentPage - 1)}
+            disabled={ordersMeta.currentPage <= 1}
+            class="px-3 py-1 border-2 border-black font-bold uppercase text-xs
+              {ordersMeta.currentPage <= 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-black hover:bg-black hover:text-white transition-colors'}"
+          >
+            &lt; Prev
+          </button>
+          {#each Array(ordersMeta.lastPage) as _, i}
+            {@const pageNum = i + 1}
+            {#if ordersMeta.lastPage <= 7 || pageNum === 1 || pageNum === ordersMeta.lastPage || (pageNum >= ordersMeta.currentPage - 1 && pageNum <= ordersMeta.currentPage + 1)}
+              <button
+                onclick={() => goToPage(pageNum)}
+                class="px-3 py-1 border-2 border-black font-bold text-xs
+                  {pageNum === ordersMeta.currentPage ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white transition-colors'}"
+              >
+                {pageNum}
+              </button>
+            {:else if pageNum === ordersMeta.currentPage - 2 || pageNum === ordersMeta.currentPage + 2}
+              <span class="px-1 py-1 text-gray-400 font-bold">...</span>
+            {/if}
+          {/each}
+          <button
+            onclick={() => goToPage(ordersMeta.currentPage + 1)}
+            disabled={ordersMeta.currentPage >= ordersMeta.lastPage}
+            class="px-3 py-1 border-2 border-black font-bold uppercase text-xs
+              {ordersMeta.currentPage >= ordersMeta.lastPage ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-black hover:bg-black hover:text-white transition-colors'}"
+          >
+            Next &gt;
+          </button>
+        </div>
+      </div>
+    {/if}
   {/if}
 </div>

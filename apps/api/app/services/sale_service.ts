@@ -1,8 +1,10 @@
 import db from '@adonisjs/lucid/services/db'
+import transmit from '@adonisjs/transmit/services/main'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
 import Payment from '#models/payment'
 import Product from '#models/product'
+import type { ModelPaginatorContract } from '@adonisjs/lucid/types/model'
 
 interface OrderItemPayload {
   productId: number
@@ -78,6 +80,11 @@ export default class SaleService {
       await order.save()
 
       await trx.commit()
+
+      // Broadcast: new order created + inventory changed (stock decrements)
+      transmit.broadcast(`tenants/${tenantId}/orders`, { event: 'order:created' })
+      transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'product:updated' })
+
       return order
     } catch (error) {
       await trx.rollback()
@@ -129,6 +136,10 @@ export default class SaleService {
       }
 
       await trx.commit()
+
+      // Broadcast: order updated (payment processed, possibly completed)
+      transmit.broadcast(`tenants/${tenantId}/orders`, { event: 'order:updated' })
+
       return payment
     } catch (error) {
       await trx.rollback()
@@ -152,12 +163,19 @@ export default class SaleService {
   }
 
   /**
-   * List recent orders for a tenant
+   * List orders for a tenant with pagination
    */
-  async listOrders(tenantId: number): Promise<Order[]> {
+  async listOrders(
+    tenantId: number,
+    options: { page?: number; perPage?: number } = {}
+  ): Promise<ModelPaginatorContract<Order>> {
+    const page = options.page ?? 1
+    const perPage = options.perPage ?? 20
+
     return await Order.query()
       .where('tenantId', tenantId)
       .preload('customer')
       .orderBy('createdAt', 'desc')
+      .paginate(page, perPage)
   }
 }

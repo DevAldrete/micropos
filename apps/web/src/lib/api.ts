@@ -26,6 +26,7 @@ export interface ApiError {
 export interface Tenant {
   id: number;
   name: string;
+  role: string;
 }
 
 export interface Category {
@@ -44,6 +45,40 @@ export interface Product {
   description: string | null;
   price: number;
   stock: number;
+}
+
+export interface Customer {
+  id: number;
+  tenantId: number;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  createdAt: string;
+  updatedAt: string | null;
+}
+
+export interface TeamMember {
+  id: number;
+  userId: number;
+  role: string;
+  createdAt: string;
+  user: {
+    id: number;
+    fullName: string | null;
+    email: string;
+  };
+}
+
+/** Paginated response shape returned by Lucid's `.paginate()` */
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    perPage: number;
+    currentPage: number;
+    lastPage: number;
+    firstPage: number;
+  };
 }
 
 // --------------------------------------------------------------------------

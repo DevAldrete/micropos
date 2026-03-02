@@ -1,29 +1,20 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types.js";
-import { apiFetch, type Tenant, type Category, type Product } from "$lib/api";
+import { apiFetch, type Category, type Product } from "$lib/api";
 
-export const load: PageServerLoad = async ({ locals, request }) => {
+export const load: PageServerLoad = async ({ locals, request, parent }) => {
   if (!locals.user) {
     redirect(302, "/login");
   }
 
+  const { tenants, activeTenantId } = await parent();
   const cookieHeader = request.headers.get("cookie") ?? undefined;
 
-  // 1. Fetch tenants
-  const tenantsRes = await apiFetch("/api/v1/tenants", {}, cookieHeader);
-  if (!tenantsRes.ok) {
-    return { tenants: [], categories: [], products: [] };
+  if (!activeTenantId || tenants.length === 0) {
+    return { tenants: [], categories: [], products: [], activeTenantId: null };
   }
 
-  const tenants = await tenantsRes.json();
-
-  if (tenants.length === 0) {
-    return { tenants: [], categories: [], products: [] };
-  }
-
-  const activeTenantId = tenants[0].id;
-
-  // 2. Fetch categories & products in parallel
+  // Fetch categories & products in parallel
   const [categoriesRes, productsRes] = await Promise.all([
     apiFetch(`/api/v1/t/${activeTenantId}/categories`, {}, cookieHeader),
     apiFetch(`/api/v1/t/${activeTenantId}/products`, {}, cookieHeader),
@@ -61,7 +52,7 @@ export const actions: Actions = {
     let items;
     try {
       items = JSON.parse(itemsJson);
-    } catch (e) {
+    } catch {
       return fail(400, { error: "Invalid items format" });
     }
 

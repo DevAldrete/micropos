@@ -8,11 +8,14 @@ export default class ProductController {
   async index({ params, request, response }: HttpContext, inventoryService: InventoryService) {
     const tenantId = Number(params.tenant_id)
     const categoryId = request.input('categoryId')
+    const page = request.input('page')
+    const perPage = request.input('perPage')
 
-    const products = await inventoryService.getProducts(
-      tenantId,
-      categoryId ? Number(categoryId) : undefined
-    )
+    const products = await inventoryService.getProducts(tenantId, {
+      categoryId: categoryId ? Number(categoryId) : undefined,
+      page: page ? Number(page) : undefined,
+      perPage: perPage ? Number(perPage) : undefined,
+    })
     return response.json(products)
   }
 

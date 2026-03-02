@@ -3,24 +3,19 @@ import type { PageServerLoad } from "./$types.js";
 import { apiFetch } from "$lib/api";
 
 /**
- * Guard: redirect unauthenticated users to the login page.
- * The user is populated by hooks.server.ts on every request.
+ * Dashboard overview page.
+ *
+ * Tenants and activeTenantId come from the parent dashboard layout.
  */
-export const load: PageServerLoad = async ({ locals, request }) => {
+export const load: PageServerLoad = async ({ locals, request, parent }) => {
   if (!locals.user) {
     redirect(302, "/login");
   }
 
+  const { tenants, activeTenantId } = await parent();
   const cookieHeader = request.headers.get("cookie") ?? undefined;
 
-  // 1. Fetch tenants
-  const tenantsRes = await apiFetch("/api/v1/tenants", {}, cookieHeader);
-  let tenants = [];
-  if (tenantsRes.ok) {
-    tenants = await tenantsRes.json();
-  }
-
-  if (tenants.length === 0) {
+  if (!activeTenantId || tenants.length === 0) {
     return {
       user: locals.user,
       tenants: [],
@@ -34,27 +29,33 @@ export const load: PageServerLoad = async ({ locals, request }) => {
     };
   }
 
-  const activeTenantId = tenants[0].id;
-
-  // 2. Fetch orders and products in parallel
+  // Fetch orders and products in parallel
+  // Orders endpoint always returns paginated response now.
+  // For the dashboard overview we request a large page to get recent stats.
+  // Products without ?page= returns a plain array.
   const [ordersRes, productsRes] = await Promise.all([
-    apiFetch(`/api/v1/t/${activeTenantId}/orders`, {}, cookieHeader),
+    apiFetch(
+      `/api/v1/t/${activeTenantId}/orders?page=1&perPage=100`,
+      {},
+      cookieHeader,
+    ),
     apiFetch(`/api/v1/t/${activeTenantId}/products`, {}, cookieHeader),
   ]);
 
-  const orders = ordersRes.ok ? await ordersRes.json() : [];
+  const ordersJson = ordersRes.ok
+    ? await ordersRes.json()
+    : { data: [], meta: { total: 0 } };
+  const orders = ordersJson.data ?? [];
   const products = productsRes.ok ? await productsRes.json() : [];
 
   // Compute stats
-  // Gross volume is the sum of totals for completed orders
   const completedOrders = orders.filter((o: any) => o.status === "completed");
   const grossVolume = completedOrders.reduce(
     (sum: number, o: any) => sum + Number(o.total),
     0,
   );
-  const totalOrders = orders.length;
+  const totalOrders = ordersJson.meta?.total ?? orders.length;
 
-  // Inventory metrics
   const activeInventory = products.reduce(
     (sum: number, p: any) => sum + p.stock,
     0,
