@@ -16,6 +16,7 @@ const CategoryController = () => import('#controllers/category_controller')
 const ProductController = () => import('#controllers/product_controller')
 const OrderController = () => import('#controllers/order_controller')
 const CustomerController = () => import('#controllers/customer_controller')
+const TeamController = () => import('#controllers/team_controller')
 
 router.get('/', async () => {
   return { hello: 'world' }
@@ -47,30 +48,51 @@ router
     // Multi-tenant resources (tenant membership enforced by middleware)
     router
       .group(() => {
-        // Inventory: Categories
-        router.get('/categories', [CategoryController, 'index'])
-        router.post('/categories', [CategoryController, 'store'])
-        router.put('/categories/:id', [CategoryController, 'update'])
-        router.delete('/categories/:id', [CategoryController, 'destroy'])
+        // --- Resources accessible to ALL roles (owner, admin, employee) ---
 
-        // Inventory: Products
+        // Products: read-only for all
         router.get('/products', [ProductController, 'index'])
-        router.post('/products', [ProductController, 'store'])
-        router.put('/products/:id', [ProductController, 'update'])
-        router.delete('/products/:id', [ProductController, 'destroy'])
 
-        // Sales: Orders & Payments
+        // Orders: read + create for all (employees need to use the terminal)
         router.get('/orders', [OrderController, 'index'])
         router.post('/orders', [OrderController, 'store'])
         router.get('/orders/:id', [OrderController, 'show'])
         router.post('/orders/:id/pay', [OrderController, 'pay'])
 
-        // Customers
+        // Customers: read-only for all
         router.get('/customers', [CustomerController, 'index'])
-        router.post('/customers', [CustomerController, 'store'])
         router.get('/customers/:id', [CustomerController, 'show'])
-        router.put('/customers/:id', [CustomerController, 'update'])
-        router.delete('/customers/:id', [CustomerController, 'destroy'])
+
+        // --- Resources restricted to OWNER and ADMIN ---
+        router
+          .group(() => {
+            // Inventory: Categories (full CRUD)
+            router.get('/categories', [CategoryController, 'index'])
+            router.post('/categories', [CategoryController, 'store'])
+            router.put('/categories/:id', [CategoryController, 'update'])
+            router.delete('/categories/:id', [CategoryController, 'destroy'])
+
+            // Inventory: Products (write operations)
+            router.post('/products', [ProductController, 'store'])
+            router.put('/products/:id', [ProductController, 'update'])
+            router.delete('/products/:id', [ProductController, 'destroy'])
+
+            // Customers (write operations)
+            router.post('/customers', [CustomerController, 'store'])
+            router.put('/customers/:id', [CustomerController, 'update'])
+            router.delete('/customers/:id', [CustomerController, 'destroy'])
+          })
+          .use(middleware.role({ roles: ['owner', 'admin'] }))
+
+        // --- Resources restricted to OWNER only ---
+        router
+          .group(() => {
+            router.get('/team', [TeamController, 'index'])
+            router.post('/team/invite', [TeamController, 'invite'])
+            router.put('/team/:id', [TeamController, 'updateRole'])
+            router.delete('/team/:id', [TeamController, 'destroy'])
+          })
+          .use(middleware.role({ roles: ['owner'] }))
       })
       .prefix('/t/:tenant_id')
       .use(middleware.tenant())
