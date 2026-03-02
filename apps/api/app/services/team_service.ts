@@ -1,4 +1,5 @@
 import db from '@adonisjs/lucid/services/db'
+import transmit from '@adonisjs/transmit/services/main'
 import TenantMember from '#models/tenant_member'
 import User from '#models/user'
 
@@ -105,6 +106,8 @@ export default class TeamService {
         .preload('user')
         .firstOrFail()
 
+      transmit.broadcast(`tenants/${tenantId}/team`, { event: 'member:invited' })
+
       return {
         id: member.id,
         userId: member.userId,
@@ -158,6 +161,8 @@ export default class TeamService {
     member.role = newRole
     await member.save()
 
+    transmit.broadcast(`tenants/${tenantId}/team`, { event: 'member:updated' })
+
     return {
       id: member.id,
       userId: member.userId,
@@ -207,5 +212,6 @@ export default class TeamService {
     }
 
     await member.delete()
+    transmit.broadcast(`tenants/${tenantId}/team`, { event: 'member:removed' })
   }
 }

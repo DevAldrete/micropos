@@ -1,5 +1,6 @@
 import Category from '#models/category'
 import Product from '#models/product'
+import transmit from '@adonisjs/transmit/services/main'
 import type { ModelPaginatorContract } from '@adonisjs/lucid/types/model'
 
 interface CreateCategoryPayload {
@@ -21,10 +22,13 @@ export default class InventoryService {
    * Create a new category for a tenant
    */
   async createCategory(tenantId: number, payload: CreateCategoryPayload): Promise<Category> {
-    return await Category.create({
+    const category = await Category.create({
       tenantId,
       ...payload,
     })
+
+    transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'category:created' })
+    return category
   }
 
   /**
@@ -50,6 +54,7 @@ export default class InventoryService {
     category.merge(payload)
     await category.save()
 
+    transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'category:updated' })
     return category
   }
 
@@ -63,16 +68,20 @@ export default class InventoryService {
       .firstOrFail()
 
     await category.delete()
+    transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'category:deleted' })
   }
 
   /**
    * Create a new product for a tenant
    */
   async createProduct(tenantId: number, payload: CreateProductPayload): Promise<Product> {
-    return await Product.create({
+    const product = await Product.create({
       tenantId,
       ...payload,
     })
+
+    transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'product:created' })
+    return product
   }
 
   /**
@@ -91,6 +100,7 @@ export default class InventoryService {
     product.merge(payload)
     await product.save()
 
+    transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'product:updated' })
     return product
   }
 
@@ -131,6 +141,7 @@ export default class InventoryService {
     product.stock += quantityChange
     await product.save()
 
+    transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'product:updated' })
     return product
   }
 
@@ -144,5 +155,6 @@ export default class InventoryService {
       .firstOrFail()
 
     await product.delete()
+    transmit.broadcast(`tenants/${tenantId}/inventory`, { event: 'product:deleted' })
   }
 }

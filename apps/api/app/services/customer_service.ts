@@ -1,4 +1,5 @@
 import Customer from '#models/customer'
+import transmit from '@adonisjs/transmit/services/main'
 import type { ModelPaginatorContract } from '@adonisjs/lucid/types/model'
 
 interface CreateCustomerPayload {
@@ -41,10 +42,13 @@ export default class CustomerService {
    * Create a new customer for a tenant
    */
   async createCustomer(tenantId: number, payload: CreateCustomerPayload): Promise<Customer> {
-    return await Customer.create({
+    const customer = await Customer.create({
       tenantId,
       ...payload,
     })
+
+    transmit.broadcast(`tenants/${tenantId}/customers`, { event: 'customer:created' })
+    return customer
   }
 
   /**
@@ -63,6 +67,7 @@ export default class CustomerService {
     customer.merge(payload)
     await customer.save()
 
+    transmit.broadcast(`tenants/${tenantId}/customers`, { event: 'customer:updated' })
     return customer
   }
 
@@ -76,5 +81,6 @@ export default class CustomerService {
       .firstOrFail()
 
     await customer.delete()
+    transmit.broadcast(`tenants/${tenantId}/customers`, { event: 'customer:deleted' })
   }
 }
